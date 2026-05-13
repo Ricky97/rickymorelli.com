@@ -3,32 +3,301 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Landing Page</title>
+    <title>Ricky Morelli — Strategist, Media Buyer, Advertising Nerd</title>
+    <meta name="description" content="Ricky Morelli — Strategist, Media Buyer, Advertising Nerd. A personal index.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        body, html {
+        :root {
+            --paper: #ECE7DF;
+            --ink: #111111;
+            --moss: #314236;
+            --rule: rgba(17, 17, 17, 0.18);
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        html, body {
             margin: 0;
             padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
+            background: var(--paper);
+            color: var(--ink);
+            font-family: 'Archivo Narrow', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-weight: 400;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
         }
-        .video-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow-x: hidden;
         }
-        .video-container video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+
+        /* Film grain overlay */
+        .grain {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 100;
+            opacity: 0.35;
+            mix-blend-mode: multiply;
+            background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.067 0 0 0 0 0.067 0 0 0 0 0.067 0 0 0 0.5 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+        }
+
+        .utility-strip {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 22px clamp(20px, 4vw, 56px) 0;
+            font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+            font-size: 11px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--ink);
+        }
+
+        .utility-strip .left,
+        .utility-strip .right {
+            display: flex;
+            gap: clamp(14px, 2vw, 28px);
+            align-items: center;
+        }
+
+        .utility-strip .dot {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--moss);
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        .utility-strip a {
+            color: var(--ink);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            padding-bottom: 1px;
+            transition: border-color 180ms ease, color 180ms ease;
+        }
+
+        .utility-strip a:hover {
+            color: var(--moss);
+            border-bottom-color: var(--moss);
+        }
+
+        main {
+            flex: 1;
+            display: grid;
+            grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+            gap: clamp(24px, 4vw, 72px);
+            align-items: end;
+            padding: clamp(40px, 8vh, 120px) clamp(20px, 4vw, 56px) clamp(40px, 6vh, 80px);
+        }
+
+        .name {
+            font-family: 'Archivo Narrow', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-weight: 700;
+            font-size: clamp(72px, 17vw, 280px);
+            line-height: 0.84;
+            letter-spacing: -0.025em;
+            margin: 0;
+            color: var(--ink);
+            text-transform: uppercase;
+        }
+
+        .name span {
+            display: block;
+        }
+
+        .name .last {
+            color: var(--moss);
+        }
+
+        .column-right {
+            display: flex;
+            flex-direction: column;
+            gap: clamp(28px, 4vh, 48px);
+            padding-bottom: clamp(8px, 2vh, 24px);
+        }
+
+        .section-label {
+            font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+            font-size: 10px;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--ink);
+            opacity: 0.55;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .byline {
+            font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+            font-size: clamp(13px, 1.05vw, 15px);
+            line-height: 2;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: var(--ink);
+        }
+
+        .byline ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .byline li {
+            display: flex;
+            align-items: baseline;
+            gap: 14px;
+        }
+
+        .byline li::before {
+            content: "—";
+            color: var(--moss);
+            font-weight: 500;
+        }
+
+        .cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 14px;
+            align-self: flex-start;
+            padding: 16px 22px;
+            font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+            font-size: 12px;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--ink);
+            background: transparent;
+            border: 1px solid var(--ink);
+            text-decoration: none;
+            transition: background 200ms ease, color 200ms ease, border-color 200ms ease;
+            position: relative;
+        }
+
+        .cta .arrow {
+            display: inline-block;
+            transition: transform 220ms ease;
+        }
+
+        .cta:hover {
+            background: var(--ink);
+            color: var(--paper);
+            border-color: var(--ink);
+        }
+
+        .cta:hover .arrow {
+            transform: translateX(4px);
+        }
+
+        footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px clamp(20px, 4vw, 56px) 22px;
+            border-top: 1px solid var(--rule);
+            font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+            font-size: 10px;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--ink);
+            opacity: 0.7;
+        }
+
+        footer .meta {
+            display: flex;
+            gap: clamp(12px, 2vw, 28px);
+        }
+
+        @media (max-width: 820px) {
+            main {
+                grid-template-columns: 1fr;
+                align-items: start;
+                gap: clamp(40px, 6vh, 64px);
+                padding-top: clamp(48px, 8vh, 96px);
+            }
+
+            .name {
+                font-size: clamp(80px, 22vw, 200px);
+            }
+
+            .column-right {
+                padding-bottom: 0;
+            }
+
+            .utility-strip {
+                font-size: 10px;
+            }
+
+            footer {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .utility-strip .left .label-long {
+                display: none;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="video-container">
-        <video src="video.mp4" autoplay loop muted playsinline></video>
-    </div>
+    <div class="grain" aria-hidden="true"></div>
+
+    <header class="utility-strip">
+        <div class="left">
+            <span><span class="dot"></span>INDEX <span class="label-long">/ PERSONAL</span></span>
+        </div>
+        <nav class="right" aria-label="External links">
+            <a href="https://www.linkedin.com/in/rickymorelli/" target="_blank" rel="noopener">LinkedIn</a>
+            <a href="https://substack.com/@rickymorelli" target="_blank" rel="noopener">Substack</a>
+        </nav>
+    </header>
+
+    <main>
+        <h1 class="name" aria-label="Ricky Morelli">
+            <span>Ricky</span>
+            <span class="last">Morelli</span>
+        </h1>
+
+        <section class="column-right">
+            <div>
+                <span class="section-label">Vol. 01 — Practice</span>
+                <div class="byline" aria-label="Roles">
+                    <ul>
+                        <li>Strategist</li>
+                        <li>Media Buyer</li>
+                        <li>Advertising Nerd</li>
+                    </ul>
+                </div>
+            </div>
+
+            <a class="cta" href="mailto:ricky@rickymorelli.com">
+                <span>Contact Me</span>
+                <span class="arrow" aria-hidden="true">→</span>
+            </a>
+        </section>
+    </main>
+
+    <footer>
+        <div class="meta">
+            <span>© Ricky Morelli</span>
+            <span>MMXXVI</span>
+        </div>
+        <div class="meta">
+            <span>rickymorelli.com</span>
+        </div>
+    </footer>
 </body>
 </html>
