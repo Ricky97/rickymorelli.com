@@ -469,6 +469,32 @@
     transform: scale(0.98);
   }
 
+  .progress-dots {
+    position: absolute;
+    bottom: 24px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(237,228,211,0.2);
+  }
+
+  .dot.done {
+    background: var(--gold);
+  }
+
+  .dot.current {
+    background: var(--paper);
+    transform: scale(1.4);
+  }
+
   /* ROLE REVEAL */
   .role-screen {
     justify-content: center;
@@ -709,13 +735,14 @@
   <div class="header">
     <div class="stamp">Klassifiziert</div>
     <h1>Secret <em>Roles</em></h1>
-    <div class="subtitle">Multi-device party assignment</div>
+    <div class="subtitle">Party assignment</div>
   </div>
   <div class="info-text">
-    Each player joins from their own phone. The host shares a link or QR code.
+    Pass one phone around the table, or open a room everyone joins from their own phone.
   </div>
-  <button class="btn-primary" onclick="goHostSetup()">Host a New Game</button>
-  <button class="btn-ghost" onclick="showScreen('join-screen')">Join a Game</button>
+  <button class="btn-primary" onclick="goLocalSetup()">Pass the Phone</button>
+  <button class="btn-ghost" onclick="goHostSetup()">Multi-Device Room</button>
+  <button class="btn-ghost" onclick="showScreen('join-screen')">Join a Room</button>
 </div>
 
 <!-- SETUP SCREEN (HOST) -->
@@ -752,8 +779,17 @@
 
   <div class="names-list" id="names-list"></div>
 
-  <button class="btn-primary" id="deal-btn" onclick="dealAndShare()">Deal Roles &amp; Create Room</button>
+  <button class="btn-primary" id="deal-btn" onclick="dealRoles()">Deal Roles</button>
   <button class="btn-ghost" onclick="showScreen('home-screen')">Back</button>
+</div>
+
+<!-- PASS PHONE SCREEN (LOCAL) -->
+<div class="screen pass-screen" id="pass-screen">
+  <div class="pass-prompt">Pass the phone to</div>
+  <div class="player-name" id="pass-name">—</div>
+  <div class="player-instruction" id="pass-instruction">Hold the phone so only you can see the screen.</div>
+  <div class="reveal-zone" onclick="revealLocalRole()">Tap to reveal</div>
+  <div class="progress-dots" id="progress-dots"></div>
 </div>
 
 <!-- SHARE SCREEN (HOST) -->
@@ -828,6 +864,18 @@
   <button class="hide-btn" onclick="hideRoleAfterReveal()">Hide</button>
 </div>
 
+<!-- LOCAL HUB (one phone, after all roles revealed) -->
+<div class="screen hub-screen" id="local-hub">
+  <div class="hub-icon">✦</div>
+  <div class="hub-title">Game in Play</div>
+  <div class="hub-text">Roles dealt. Use Investigate during a presidential power.</div>
+  <div class="hub-buttons">
+    <button class="btn-primary" onclick="showScreen('investigate-select')">Investigate a Player</button>
+    <button class="btn-ghost" onclick="redealSameNames()">Same Players, New Roles</button>
+    <button class="btn-danger" onclick="resetGame()">New Game</button>
+  </div>
+</div>
+
 <!-- PLAYER HUB (after first reveal) -->
 <div class="screen hub-screen" id="player-hub">
   <div class="hub-icon">✦</div>
@@ -847,7 +895,7 @@
     <div class="subtitle">Select a player to investigate</div>
   </div>
   <div class="player-pick-list" id="player-pick-list"></div>
-  <button class="btn-ghost" onclick="showScreen('host-hub')">Cancel</button>
+  <button class="btn-ghost" onclick="returnToHub()">Cancel</button>
 </div>
 
 <!-- INVESTIGATE: REVEAL -->
@@ -864,7 +912,7 @@
   <div class="role-title" id="investigate-result-title">—</div>
   <div class="role-divider"></div>
   <div class="role-info" id="investigate-result-info"></div>
-  <button class="hide-btn" onclick="showScreen('host-hub')">Hide &amp; Return</button>
+  <button class="hide-btn" onclick="returnToHub()">Hide &amp; Return</button>
 </div>
 
 <!-- LOADING -->
@@ -897,6 +945,9 @@
     blobId: null,
     isHost: false,
     myName: null,
+    mode: 'local',   // 'local' (pass the phone) or 'remote' (multi-device room)
+    currentIdx: 0,   // local mode: index of player currently revealing
+    localStarted: false, // local mode: roles dealt and pass-around started
   };
 
   let investigateTargetIdx = null;
@@ -909,6 +960,10 @@
       myName: state.myName,
       count: state.count,
       names: state.names,
+      mode: state.mode,
+      roles: state.mode === 'local' ? state.roles : null,
+      currentIdx: state.currentIdx,
+      localStarted: state.localStarted,
     }));
   }
 
@@ -922,6 +977,10 @@
       if (p.blobId) state.blobId = p.blobId;
       if (p.isHost) state.isHost = p.isHost;
       if (p.myName) state.myName = p.myName;
+      if (p.mode === 'local' || p.mode === 'remote') state.mode = p.mode;
+      if (Array.isArray(p.roles)) state.roles = p.roles;
+      if (typeof p.currentIdx === 'number') state.currentIdx = p.currentIdx;
+      if (typeof p.localStarted === 'boolean') state.localStarted = p.localStarted;
     } catch (e) {}
   }
 
@@ -982,12 +1041,32 @@
     t._timer = setTimeout(() => t.classList.remove('show'), 1600);
   }
 
-  // ---------- HOST SETUP ----------
+  // ---------- HOST / LOCAL SETUP ----------
   function goHostSetup() {
+    state.mode = 'remote';
     state.isHost = true;
     state.blobId = null;
     state.myName = null;
+    state.roles = [];
+    state.currentIdx = 0;
+    state.localStarted = false;
     if (!state.names) state.names = [];
+    document.getElementById('deal-btn').textContent = 'Deal Roles & Create Room';
+    renderNames();
+    updateDistribution();
+    showScreen('setup-screen');
+  }
+
+  function goLocalSetup() {
+    state.mode = 'local';
+    state.isHost = false;
+    state.blobId = null;
+    state.myName = null;
+    state.roles = [];
+    state.currentIdx = 0;
+    state.localStarted = false;
+    if (!state.names) state.names = [];
+    document.getElementById('deal-btn').textContent = 'Deal Roles';
     renderNames();
     updateDistribution();
     showScreen('setup-screen');
@@ -1041,8 +1120,8 @@
     return a;
   }
 
-  // ---------- DEAL & CREATE ROOM ----------
-  async function dealAndShare() {
+  // ---------- DEAL ROLES ----------
+  function assignRoles() {
     const finalNames = [];
     for (let i = 0; i < state.count; i++) {
       const name = (state.names[i] || '').trim();
@@ -1058,7 +1137,31 @@
     ];
     const shuffled = shuffle(roleList);
     state.roles = finalNames.map((name, i) => ({ name, role: shuffled[i] }));
+  }
 
+  async function dealRoles() {
+    assignRoles();
+    if (state.mode === 'local') {
+      startLocalPass();
+    } else {
+      await createRemoteRoom();
+    }
+  }
+
+  function startLocalPass() {
+    state.currentIdx = 0;
+    state.localStarted = true;
+    saveLocal();
+    renderPass();
+    showScreen('pass-screen');
+  }
+
+  function redealSameNames() {
+    assignRoles();
+    startLocalPass();
+  }
+
+  async function createRemoteRoom() {
     const btn = document.getElementById('deal-btn');
     btn.disabled = true;
     const origText = btn.textContent;
@@ -1081,6 +1184,42 @@
     } finally {
       btn.disabled = false;
       btn.textContent = origText;
+    }
+  }
+
+  // ---------- LOCAL PASS THE PHONE ----------
+  function renderPass() {
+    const p = state.roles[state.currentIdx];
+    document.getElementById('pass-name').textContent = p.name;
+    document.getElementById('pass-instruction').textContent =
+      state.currentIdx === 0
+        ? 'Make sure only you can see the screen.'
+        : 'Hold the phone so only you can see the screen.';
+
+    const dots = document.getElementById('progress-dots');
+    dots.innerHTML = '';
+    for (let i = 0; i < state.roles.length; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'dot';
+      if (i < state.currentIdx) dot.classList.add('done');
+      if (i === state.currentIdx) dot.classList.add('current');
+      dots.appendChild(dot);
+    }
+  }
+
+  function revealLocalRole() {
+    const p = state.roles[state.currentIdx];
+    showRoleForPlayer(p);
+  }
+
+  function advanceLocalRole() {
+    state.currentIdx++;
+    saveLocal();
+    if (state.currentIdx >= state.roles.length) {
+      showScreen('local-hub');
+    } else {
+      renderPass();
+      showScreen('pass-screen');
     }
   }
 
@@ -1142,7 +1281,8 @@
         showScreen('home-screen');
         return;
       }
-      const wasHost = state.isHost && state.blobId === id;
+      const wasHost = state.isHost && state.blobId === id && state.mode === 'remote';
+      state.mode = 'remote';
       state.blobId = id;
       state.roles = data.players;
       state.count = data.count || data.players.length;
@@ -1247,7 +1387,9 @@
   }
 
   function hideRoleAfterReveal() {
-    if (state.isHost) {
+    if (state.mode === 'local') {
+      advanceLocalRole();
+    } else if (state.isHost) {
       showScreen('host-hub');
     } else {
       showScreen('player-hub');
@@ -1271,6 +1413,16 @@
     showPickName();
   }
 
+  function returnToHub() {
+    if (state.mode === 'local') {
+      showScreen('local-hub');
+    } else if (state.isHost) {
+      showScreen('host-hub');
+    } else {
+      showScreen('player-hub');
+    }
+  }
+
   function leaveGame() {
     if (!confirm('Leave this game on this device? Your role will be forgotten here.')) return;
     state.blobId = null;
@@ -1285,20 +1437,27 @@
   }
 
   async function resetGame() {
-    if (!confirm('Reset the game? This deletes the room for everyone. You will return to setup.')) return;
-    if (state.blobId) {
+    const msg = state.mode === 'remote'
+      ? 'Reset the game? This deletes the room for everyone. You will return to setup.'
+      : 'Start a new game? Roles will be re-dealt.';
+    if (!confirm(msg)) return;
+    if (state.mode === 'remote' && state.blobId) {
       await apiDelete(state.blobId);
     }
     state.blobId = null;
     state.myName = null;
     state.roles = [];
-    state.isHost = true;
+    state.currentIdx = 0;
+    state.localStarted = false;
+    if (state.mode === 'remote') state.isHost = true;
     saveLocal();
     if (window.location.hash) {
       history.replaceState(null, '', window.location.pathname);
     }
     renderNames();
     updateDistribution();
+    document.getElementById('deal-btn').textContent =
+      state.mode === 'remote' ? 'Deal Roles & Create Room' : 'Deal Roles';
     showScreen('setup-screen');
   }
 
@@ -1370,8 +1529,19 @@
       return;
     }
 
-    if (state.blobId) {
-      // Resume previous session
+    // Resume local pass-the-phone game if in progress
+    if (state.mode === 'local' && state.localStarted && Array.isArray(state.roles) && state.roles.length) {
+      if (state.currentIdx >= state.roles.length) {
+        showScreen('local-hub');
+      } else {
+        renderPass();
+        showScreen('pass-screen');
+      }
+      return;
+    }
+
+    // Resume remote room
+    if (state.mode === 'remote' && state.blobId) {
       document.getElementById('loading-text').textContent = 'Resuming session...';
       showScreen('loading-screen');
       const data = await apiRead(state.blobId);
@@ -1387,11 +1557,11 @@
           showPickName();
         }
       } else {
-        // Room gone
         clearLocal();
         state.blobId = null;
         state.myName = null;
         state.isHost = false;
+        state.mode = 'local';
         showScreen('home-screen');
       }
       return;
