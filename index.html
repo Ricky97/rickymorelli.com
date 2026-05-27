@@ -335,7 +335,7 @@
   }
 
   .share-code-block::before {
-    content: 'ROOM CODE';
+    content: 'GAME LINK';
     position: absolute;
     top: -8px;
     left: 16px;
@@ -935,8 +935,7 @@
     12: { l: 7, f: 4, h: 1 },
   };
 
-  const API_BASE = 'https://jsonblob.com/api/jsonBlob';
-  const LS_KEY = 'secretRoles_v1';
+  const LS_KEY = 'secretRoles_v2';
 
   let state = {
     count: 11,
@@ -988,40 +987,33 @@
     localStorage.removeItem(LS_KEY);
   }
 
-  // ---------- API (jsonblob.com) ----------
-  async function apiCreate(data) {
-    const res = await fetch(API_BASE, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    // jsonblob.com exposes the new blob ID via X-Jsonblob header (CORS-exposed)
-    // and also via the Location header (may be blocked by CORS in some browsers).
-    let loc = res.headers.get('X-Jsonblob') || res.headers.get('x-jsonblob') ||
-              res.headers.get('Location') || res.headers.get('location');
-    if (!loc && res.url && res.url !== API_BASE) loc = res.url;
-    if (!loc) throw new Error('Could not read new room ID from response');
-    const id = loc.split('/').pop().trim();
-    if (!id || !/^\d+$/.test(id)) throw new Error('Invalid room ID: ' + loc);
-    return id;
+  // ---------- ROOM ENCODING (URL hash = database) ----------
+  // The full game state is base64-encoded into the URL fragment. No server.
+  const ROLE_SHORT = { liberal: 'l', fascist: 'f', hitler: 'h' };
+  const ROLE_FULL  = { l: 'liberal', f: 'fascist', h: 'hitler' };
+
+  function encodeRoom(roles, count) {
+    const compact = { c: count, p: roles.map(r => [r.name, ROLE_SHORT[r.role]]) };
+    const json = JSON.stringify(compact);
+    const utf8 = unescape(encodeURIComponent(json));
+    return btoa(utf8).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
   }
 
-  async function apiRead(id) {
-    const res = await fetch(`${API_BASE}/${id}`, {
-      headers: { 'Accept': 'application/json' },
-    });
-    if (!res.ok) return null;
-    return await res.json();
-  }
-
-  async function apiDelete(id) {
+  function decodeRoom(token) {
     try {
-      await fetch(`${API_BASE}/${id}`, { method: 'DELETE' });
-    } catch (e) {}
+      let b64 = token.replace(/-/g, '+').replace(/_/g, '/');
+      while (b64.length % 4) b64 += '=';
+      const utf8 = atob(b64);
+      const json = decodeURIComponent(escape(utf8));
+      const obj = JSON.parse(json);
+      if (!obj || !Array.isArray(obj.p)) return null;
+      return {
+        count: obj.c || obj.p.length,
+        roles: obj.p.map(([name, r]) => ({ name, role: ROLE_FULL[r] || 'liberal' })),
+      };
+    } catch (e) {
+      return null;
+    }
   }
 
   // ---------- NAVIGATION ----------
@@ -1161,30 +1153,14 @@
     startLocalPass();
   }
 
-  async function createRemoteRoom() {
-    const btn = document.getElementById('deal-btn');
-    btn.disabled = true;
-    const origText = btn.textContent;
-    btn.innerHTML = '<span class="loader"></span>Creating Room...';
-
-    try {
-      const id = await apiCreate({
-        count: state.count,
-        players: state.roles,
-        createdAt: Date.now(),
-      });
-      state.blobId = id;
-      state.isHost = true;
-      state.myName = null;
-      saveLocal();
-      window.location.hash = id;
-      showShareScreen();
-    } catch (e) {
-      alert('Could not create the room. Check your internet connection and try again.\n\n' + e.message);
-    } finally {
-      btn.disabled = false;
-      btn.textContent = origText;
-    }
+  function createRemoteRoom() {
+    const token = encodeRoom(state.roles, state.count);
+    state.blobId = token;
+    state.isHost = true;
+    state.myName = null;
+    saveLocal();
+    window.location.hash = token;
+    showShareScreen();
   }
 
   // ---------- LOCAL PASS THE PHONE ----------
@@ -1271,44 +1247,32 @@
     await joinByBlobId(val);
   }
 
-  async function joinByBlobId(id) {
-    document.getElementById('loading-text').textContent = 'Joining room...';
-    showScreen('loading-screen');
-    try {
-      const data = await apiRead(id);
-      if (!data || !Array.isArray(data.players)) {
-        alert('Game not found. Ask the host for a new link.');
-        showScreen('home-screen');
+  function joinByBlobId(token) {
+    const data = decodeRoom(token);
+    if (!data) {
+      alert('That link or code is not valid. Ask the host for a fresh link.');
+      showScreen('home-screen');
+      return;
+    }
+    const wasHost = state.isHost && state.blobId === token && state.mode === 'remote';
+    state.mode = 'remote';
+    state.blobId = token;
+    state.roles = data.roles;
+    state.count = data.count;
+    if (!wasHost) state.isHost = false;
+    saveLocal();
+    window.location.hash = token;
+
+    if (state.myName) {
+      const p = state.roles.find(r => r.name === state.myName);
+      if (p) {
+        showScreen(state.isHost ? 'host-hub' : 'player-hub');
         return;
       }
-      const wasHost = state.isHost && state.blobId === id && state.mode === 'remote';
-      state.mode = 'remote';
-      state.blobId = id;
-      state.roles = data.players;
-      state.count = data.count || data.players.length;
-      if (!wasHost) state.isHost = false;
+      state.myName = null;
       saveLocal();
-      window.location.hash = id;
-
-      if (state.myName) {
-        const p = state.roles.find(r => r.name === state.myName);
-        if (p) {
-          if (state.isHost) {
-            showScreen('host-hub');
-          } else {
-            showScreen('player-hub');
-          }
-          return;
-        }
-        // Saved name not in this game anymore
-        state.myName = null;
-        saveLocal();
-      }
-      showPickName();
-    } catch (e) {
-      alert('Could not join the room. Check your connection.\n' + e.message);
-      showScreen('home-screen');
     }
+    showPickName();
   }
 
   function showPickName() {
@@ -1436,14 +1400,11 @@
     showScreen('home-screen');
   }
 
-  async function resetGame() {
+  function resetGame() {
     const msg = state.mode === 'remote'
-      ? 'Reset the game? This deletes the room for everyone. You will return to setup.'
+      ? 'Reset the game? Players will need a new link to play again.'
       : 'Start a new game? Roles will be re-dealt.';
     if (!confirm(msg)) return;
-    if (state.mode === 'remote' && state.blobId) {
-      await apiDelete(state.blobId);
-    }
     state.blobId = null;
     state.myName = null;
     state.roles = [];
@@ -1542,12 +1503,10 @@
 
     // Resume remote room
     if (state.mode === 'remote' && state.blobId) {
-      document.getElementById('loading-text').textContent = 'Resuming session...';
-      showScreen('loading-screen');
-      const data = await apiRead(state.blobId);
-      if (data && Array.isArray(data.players)) {
-        state.roles = data.players;
-        state.count = data.count || data.players.length;
+      const data = decodeRoom(state.blobId);
+      if (data) {
+        state.roles = data.roles;
+        state.count = data.count;
         window.location.hash = state.blobId;
         if (state.isHost) {
           showScreen('host-hub');
