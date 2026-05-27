@@ -1,34 +1,1406 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Landing Page</title>
-    <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-        }
-        .video-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-        .video-container video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Secret Roles</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,700;0,6..96,900;1,6..96,400&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  :root {
+    --ink: #1a1614;
+    --paper: #ede4d3;
+    --paper-dim: #d4c8b0;
+    --blood: #8b1a1a;
+    --blood-deep: #5c0f0f;
+    --liberal: #2d5a8a;
+    --gold: #b08c4a;
+  }
+
+  html, body {
+    height: 100%;
+    overflow-x: hidden;
+  }
+
+  body {
+    font-family: 'Bodoni Moda', Georgia, serif;
+    background: var(--ink);
+    color: var(--paper);
+    min-height: 100vh;
+    min-height: 100dvh;
+    position: relative;
+    overflow-y: auto;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(139,26,26,0.08) 0%, transparent 50%),
+      radial-gradient(circle at 80% 70%, rgba(176,140,74,0.06) 0%, transparent 50%);
+    z-index: 1;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0.95 0 0 0 0 0.9 0 0 0 0 0.8 0 0 0 0.08 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity: 0.5;
+    z-index: 2;
+    mix-blend-mode: overlay;
+  }
+
+  .screen {
+    position: relative;
+    z-index: 3;
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding: 32px 24px 48px;
+    display: none;
+    flex-direction: column;
+  }
+
+  .screen.active {
+    display: flex;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+
+  .stamp {
+    display: inline-block;
+    border: 2px solid var(--blood);
+    color: var(--blood);
+    padding: 4px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    transform: rotate(-3deg);
+    margin-bottom: 18px;
+    background: rgba(139,26,26,0.08);
+  }
+
+  h1 {
+    font-family: 'Bodoni Moda', serif;
+    font-weight: 900;
+    font-size: 44px;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--blood);
+    font-weight: 400;
+  }
+
+  .subtitle {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--paper-dim);
+    text-transform: uppercase;
+  }
+
+  .info-text {
+    text-align: center;
+    font-style: italic;
+    color: var(--paper-dim);
+    font-size: 18px;
+    line-height: 1.5;
+    max-width: 320px;
+    margin: 30px auto;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .distribution {
+    margin: 24px 0;
+    padding: 20px;
+    border: 1px solid rgba(237,228,211,0.15);
+    background: rgba(237,228,211,0.03);
+    position: relative;
+  }
+
+  .distribution::before {
+    content: 'DOSSIER';
+    position: absolute;
+    top: -8px;
+    left: 16px;
+    background: var(--ink);
+    padding: 0 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+  }
+
+  .dist-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 6px 0;
+    font-size: 16px;
+  }
+
+  .dist-row + .dist-row {
+    border-top: 1px dotted rgba(237,228,211,0.15);
+  }
+
+  .dist-label {
+    font-family: 'Bodoni Moda', serif;
+    font-style: italic;
+  }
+
+  .dist-count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  .dist-row.liberal .dist-count { color: var(--liberal); }
+  .dist-row.fascist .dist-count { color: var(--blood); }
+  .dist-row.hitler .dist-count { color: var(--gold); }
+
+  .count-control {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 0 0 20px;
+  }
+
+  .count-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--paper-dim);
+    text-transform: uppercase;
+    flex: 1;
+  }
+
+  .count-buttons {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .count-btn {
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--paper);
+    background: transparent;
+    color: var(--paper);
+    font-size: 20px;
+    font-family: 'Bodoni Moda', serif;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .count-btn:active {
+    background: var(--paper);
+    color: var(--ink);
+  }
+
+  .count-display {
+    font-family: 'Bodoni Moda', serif;
+    font-size: 32px;
+    font-weight: 700;
+    width: 50px;
+    text-align: center;
+  }
+
+  .names-list {
+    flex: 1;
+    margin-bottom: 20px;
+  }
+
+  .name-input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(237,228,211,0.2);
+    color: var(--paper);
+    font-family: 'Bodoni Moda', serif;
+    font-size: 19px;
+    padding: 12px 0 12px 36px;
+    margin-bottom: 4px;
+    outline: none;
+    position: relative;
+  }
+
+  .name-row {
+    position: relative;
+    margin-bottom: 6px;
+  }
+
+  .name-num {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--gold);
+    width: 28px;
+  }
+
+  .name-input:focus {
+    border-bottom-color: var(--blood);
+  }
+
+  .name-input::placeholder {
+    color: rgba(237,228,211,0.3);
+    font-style: italic;
+  }
+
+  .btn-primary {
+    background: var(--blood);
+    color: var(--paper);
+    border: none;
+    padding: 18px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    cursor: pointer;
+    width: 100%;
+    transition: background 0.2s;
+    font-weight: 700;
+  }
+
+  .btn-primary:active {
+    background: var(--blood-deep);
+  }
+
+  .btn-primary:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--paper-dim);
+    border: 1px solid rgba(237,228,211,0.2);
+    padding: 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  .btn-danger {
+    background: transparent;
+    color: var(--blood);
+    border: 1px solid var(--blood);
+    padding: 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+    font-weight: 700;
+  }
+
+  .btn-danger:active {
+    background: var(--blood);
+    color: var(--paper);
+  }
+
+  /* SHARE SCREEN */
+  .share-code-block {
+    text-align: center;
+    margin: 20px 0;
+    padding: 20px;
+    border: 1px solid rgba(237,228,211,0.15);
+    background: rgba(237,228,211,0.03);
+    position: relative;
+  }
+
+  .share-code-block::before {
+    content: 'ROOM CODE';
+    position: absolute;
+    top: -8px;
+    left: 16px;
+    background: var(--ink);
+    padding: 0 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+  }
+
+  .share-code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--paper);
+    word-break: break-all;
+    line-height: 1.5;
+  }
+
+  .qr-container {
+    text-align: center;
+    margin: 8px 0 20px;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .qr-container img {
+    width: 220px;
+    height: 220px;
+    border: 10px solid var(--paper);
+    background: var(--paper);
+    display: block;
+  }
+
+  .qr-caption {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--paper-dim);
+    text-transform: uppercase;
+  }
+
+  .code-input {
+    width: 100%;
+    background: rgba(237,228,211,0.05);
+    border: 1px solid rgba(237,228,211,0.3);
+    color: var(--paper);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 16px;
+    padding: 18px;
+    margin-bottom: 16px;
+    text-align: center;
+    letter-spacing: 0.05em;
+    outline: none;
+    word-break: break-all;
+  }
+
+  .code-input::placeholder {
+    color: rgba(237,228,211,0.3);
+    letter-spacing: 0.15em;
+  }
+
+  .code-input:focus {
+    border-color: var(--blood);
+  }
+
+  .code-input-wrap {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  /* PASS PHONE / REVEAL ZONE styling */
+  .pass-screen {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  .pass-prompt {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    margin-bottom: 24px;
+  }
+
+  .player-name {
+    font-family: 'Bodoni Moda', serif;
+    font-weight: 900;
+    font-size: 56px;
+    line-height: 1;
+    margin-bottom: 16px;
+    word-break: break-word;
+  }
+
+  .player-instruction {
+    font-style: italic;
+    font-size: 18px;
+    color: var(--paper-dim);
+    margin-bottom: 40px;
+    max-width: 280px;
+  }
+
+  .reveal-zone {
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    border: 2px dashed rgba(237,228,211,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    color: var(--paper-dim);
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+  }
+
+  .reveal-zone:active {
+    border-color: var(--blood);
+    color: var(--blood);
+    transform: scale(0.98);
+  }
+
+  /* ROLE REVEAL */
+  .role-screen {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  .role-screen.liberal-bg { background: linear-gradient(180deg, var(--ink) 0%, #1a2438 100%); }
+  .role-screen.fascist-bg { background: linear-gradient(180deg, var(--ink) 0%, var(--blood-deep) 100%); }
+  .role-screen.hitler-bg { background: linear-gradient(180deg, var(--ink) 0%, #000 100%); }
+
+  .role-banner {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+    opacity: 0.6;
+  }
+
+  .role-title {
+    font-family: 'Bodoni Moda', serif;
+    font-weight: 900;
+    font-style: italic;
+    font-size: 80px;
+    line-height: 0.9;
+    margin-bottom: 24px;
+    letter-spacing: -0.02em;
+  }
+
+  .role-title.liberal { color: #6ba3d8; }
+  .role-title.fascist { color: #d44545; }
+  .role-title.hitler { color: var(--gold); }
+
+  .role-divider {
+    width: 60px;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.4;
+    margin: 12px auto 24px;
+  }
+
+  .role-info {
+    font-family: 'Bodoni Moda', serif;
+    font-size: 18px;
+    line-height: 1.5;
+    max-width: 320px;
+    margin-bottom: 28px;
+    font-style: italic;
+  }
+
+  .team-list {
+    border: 1px solid rgba(237,228,211,0.2);
+    padding: 18px 24px;
+    margin-bottom: 32px;
+    background: rgba(0,0,0,0.3);
+    min-width: 240px;
+  }
+
+  .team-list-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    color: var(--gold);
+    margin-bottom: 12px;
+    text-transform: uppercase;
+  }
+
+  .team-member {
+    font-family: 'Bodoni Moda', serif;
+    font-size: 20px;
+    padding: 4px 0;
+  }
+
+  .team-member .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--gold);
+    margin-left: 6px;
+    vertical-align: middle;
+    letter-spacing: 0.15em;
+  }
+
+  .hide-btn {
+    background: var(--paper);
+    color: var(--ink);
+    border: none;
+    padding: 16px 40px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    cursor: pointer;
+    font-weight: 700;
+  }
+
+  /* GAME HUB */
+  .hub-screen {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  .hub-icon {
+    font-family: 'Bodoni Moda', serif;
+    font-size: 100px;
+    color: var(--blood);
+    line-height: 1;
+    margin-bottom: 24px;
+    font-style: italic;
+  }
+
+  .hub-title {
+    font-family: 'Bodoni Moda', serif;
+    font-size: 40px;
+    font-weight: 900;
+    margin-bottom: 12px;
+  }
+
+  .hub-text {
+    font-style: italic;
+    color: var(--paper-dim);
+    max-width: 280px;
+    margin-bottom: 40px;
+    font-size: 17px;
+    line-height: 1.5;
+  }
+
+  .hub-buttons {
+    width: 100%;
+    max-width: 360px;
+  }
+
+  /* PICK LIST */
+  .player-pick-list {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .player-pick-btn {
+    background: rgba(237,228,211,0.04);
+    border: 1px solid rgba(237,228,211,0.2);
+    color: var(--paper);
+    font-family: 'Bodoni Moda', serif;
+    font-size: 20px;
+    padding: 16px 20px;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: all 0.15s;
+  }
+
+  .player-pick-btn:active {
+    border-color: var(--blood);
+    background: rgba(139,26,26,0.15);
+  }
+
+  .player-pick-btn .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(120%);
+    background: var(--paper);
+    color: var(--ink);
+    padding: 12px 24px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-weight: 700;
+    z-index: 100;
+    transition: transform 0.3s;
+  }
+
+  .toast.show {
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* Loader */
+  .loader {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    vertical-align: middle;
+    margin-right: 8px;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* Reveal */
+  @keyframes reveal {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .screen.active > * {
+    animation: reveal 0.4s ease-out forwards;
+  }
+
+  .screen.active > *:nth-child(2) { animation-delay: 0.05s; }
+  .screen.active > *:nth-child(3) { animation-delay: 0.1s; }
+  .screen.active > *:nth-child(4) { animation-delay: 0.15s; }
+  .screen.active > *:nth-child(5) { animation-delay: 0.2s; }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+
+  .reveal-zone {
+    animation: pulse 2s ease-in-out infinite;
+  }
+</style>
 </head>
 <body>
-    <div class="video-container">
-        <video src="video.mp4" autoplay loop muted playsinline></video>
+
+<!-- HOME SCREEN -->
+<div class="screen active" id="home-screen">
+  <div class="header">
+    <div class="stamp">Klassifiziert</div>
+    <h1>Secret <em>Roles</em></h1>
+    <div class="subtitle">Multi-device party assignment</div>
+  </div>
+  <div class="info-text">
+    Each player joins from their own phone. The host shares a link or QR code.
+  </div>
+  <button class="btn-primary" onclick="goHostSetup()">Host a New Game</button>
+  <button class="btn-ghost" onclick="showScreen('join-screen')">Join a Game</button>
+</div>
+
+<!-- SETUP SCREEN (HOST) -->
+<div class="screen" id="setup-screen">
+  <div class="header">
+    <div class="stamp">Klassifiziert</div>
+    <h1>Secret <em>Roles</em></h1>
+    <div class="subtitle">Party Assignment Dossier</div>
+  </div>
+
+  <div class="distribution">
+    <div class="dist-row liberal">
+      <span class="dist-label">Liberals</span>
+      <span class="dist-count" id="dist-liberal">6</span>
     </div>
+    <div class="dist-row fascist">
+      <span class="dist-label">Fascists</span>
+      <span class="dist-count" id="dist-fascist">4</span>
+    </div>
+    <div class="dist-row hitler">
+      <span class="dist-label">Hitler</span>
+      <span class="dist-count" id="dist-hitler">1</span>
+    </div>
+  </div>
+
+  <div class="count-control">
+    <span class="count-label">Player Count</span>
+    <div class="count-buttons">
+      <button class="count-btn" onclick="changeCount(-1)">−</button>
+      <span class="count-display" id="count-display">11</span>
+      <button class="count-btn" onclick="changeCount(1)">+</button>
+    </div>
+  </div>
+
+  <div class="names-list" id="names-list"></div>
+
+  <button class="btn-primary" id="deal-btn" onclick="dealAndShare()">Deal Roles &amp; Create Room</button>
+  <button class="btn-ghost" onclick="showScreen('home-screen')">Back</button>
+</div>
+
+<!-- SHARE SCREEN (HOST) -->
+<div class="screen" id="share-screen">
+  <div class="header">
+    <div class="stamp">Room Open</div>
+    <h1>Share with <em>players</em></h1>
+    <div class="subtitle">Scan or tap copy link</div>
+  </div>
+
+  <div class="qr-container">
+    <img id="qr-img" alt="Room QR Code">
+    <div class="qr-caption">Scan to join</div>
+  </div>
+
+  <div class="share-code-block">
+    <div class="share-code" id="share-code-text">—</div>
+  </div>
+
+  <button class="btn-primary" id="copy-btn" onclick="copyShareLink()">Copy Link</button>
+  <button class="btn-ghost" onclick="showScreen('host-hub')">Continue to Game</button>
+</div>
+
+<!-- HOST HUB -->
+<div class="screen hub-screen" id="host-hub">
+  <div class="hub-icon">✦</div>
+  <div class="hub-title">Game in Play</div>
+  <div class="hub-text">Players reveal roles on their own phones. You can investigate and reset from here.</div>
+  <div class="hub-buttons">
+    <button class="btn-primary" onclick="hostViewOwnRole()">Reveal My Role</button>
+    <button class="btn-ghost" onclick="showScreen('investigate-select')">Investigate a Player</button>
+    <button class="btn-ghost" onclick="showScreen('share-screen')">Show Share Link Again</button>
+    <button class="btn-danger" onclick="resetGame()">Reset Game</button>
+  </div>
+</div>
+
+<!-- JOIN SCREEN (PLAYER) -->
+<div class="screen" id="join-screen">
+  <div class="header">
+    <div class="stamp">Join Game</div>
+    <h1>Enter <em>room code</em></h1>
+    <div class="subtitle">Ask the host for the code</div>
+  </div>
+  <div class="code-input-wrap">
+    <input type="text" class="code-input" id="join-code-input" placeholder="paste room code or link">
+    <button class="btn-primary" onclick="joinByCode()">Join Game</button>
+  </div>
+  <button class="btn-ghost" onclick="showScreen('home-screen')">Back</button>
+</div>
+
+<!-- PICK NAME (PLAYER) -->
+<div class="screen" id="pick-name-screen">
+  <div class="header">
+    <div class="stamp">Identify Yourself</div>
+    <h1>Tap <em>your name</em></h1>
+    <div class="subtitle">Your role awaits</div>
+  </div>
+  <div class="player-pick-list" id="join-pick-list"></div>
+  <button class="btn-ghost" id="pick-back-btn" onclick="leaveGame()">Leave Game</button>
+</div>
+
+<!-- ROLE REVEAL -->
+<div class="screen role-screen" id="role-screen">
+  <div class="role-banner" id="role-banner">YOUR SECRET ROLE</div>
+  <div class="role-title" id="role-title">Liberal</div>
+  <div class="role-divider"></div>
+  <div class="role-info" id="role-info"></div>
+  <div class="team-list" id="team-list" style="display:none;">
+    <div class="team-list-title" id="team-list-title">Your fellow fascists</div>
+    <div id="team-list-content"></div>
+  </div>
+  <button class="hide-btn" onclick="hideRoleAfterReveal()">Hide</button>
+</div>
+
+<!-- PLAYER HUB (after first reveal) -->
+<div class="screen hub-screen" id="player-hub">
+  <div class="hub-icon">✦</div>
+  <div class="hub-title">In the Game</div>
+  <div class="hub-text">Your role is hidden. View it again any time.</div>
+  <div class="hub-buttons">
+    <button class="btn-primary" onclick="reshowMyRole()">View My Role</button>
+    <button class="btn-ghost" onclick="leaveGame()">Leave Game</button>
+  </div>
+</div>
+
+<!-- INVESTIGATE: SELECT -->
+<div class="screen" id="investigate-select">
+  <div class="header">
+    <div class="stamp">Investigate Loyalty</div>
+    <h1>Whose <em>card?</em></h1>
+    <div class="subtitle">Select a player to investigate</div>
+  </div>
+  <div class="player-pick-list" id="player-pick-list"></div>
+  <button class="btn-ghost" onclick="showScreen('host-hub')">Cancel</button>
+</div>
+
+<!-- INVESTIGATE: REVEAL -->
+<div class="screen pass-screen" id="investigate-reveal">
+  <div class="pass-prompt">Party card of</div>
+  <div class="player-name" id="investigate-name">—</div>
+  <div class="player-instruction">Hand the phone to the President only.</div>
+  <div class="reveal-zone" onclick="revealParty()">Tap to reveal</div>
+</div>
+
+<!-- INVESTIGATE: RESULT -->
+<div class="screen role-screen" id="investigate-result">
+  <div class="role-banner">PARTY MEMBERSHIP</div>
+  <div class="role-title" id="investigate-result-title">—</div>
+  <div class="role-divider"></div>
+  <div class="role-info" id="investigate-result-info"></div>
+  <button class="hide-btn" onclick="showScreen('host-hub')">Hide &amp; Return</button>
+</div>
+
+<!-- LOADING -->
+<div class="screen hub-screen" id="loading-screen">
+  <div class="hub-icon"><span class="loader"></span></div>
+  <div class="hub-text" id="loading-text">Connecting&hellip;</div>
+</div>
+
+<div class="toast" id="toast">Copied</div>
+
+<script>
+  const DISTRIBUTION = {
+    5:  { l: 3, f: 1, h: 1 },
+    6:  { l: 4, f: 1, h: 1 },
+    7:  { l: 4, f: 2, h: 1 },
+    8:  { l: 5, f: 2, h: 1 },
+    9:  { l: 5, f: 3, h: 1 },
+    10: { l: 6, f: 3, h: 1 },
+    11: { l: 6, f: 4, h: 1 },
+    12: { l: 7, f: 4, h: 1 },
+  };
+
+  const API_BASE = 'https://jsonblob.com/api/jsonBlob';
+  const LS_KEY = 'secretRoles_v1';
+
+  let state = {
+    count: 11,
+    names: [],
+    roles: [],       // [{name, role}]
+    blobId: null,
+    isHost: false,
+    myName: null,
+  };
+
+  let investigateTargetIdx = null;
+
+  // ---------- PERSISTENCE ----------
+  function saveLocal() {
+    localStorage.setItem(LS_KEY, JSON.stringify({
+      blobId: state.blobId,
+      isHost: state.isHost,
+      myName: state.myName,
+      count: state.count,
+      names: state.names,
+    }));
+  }
+
+  function loadLocal() {
+    try {
+      const raw = localStorage.getItem(LS_KEY);
+      if (!raw) return;
+      const p = JSON.parse(raw);
+      if (typeof p.count === 'number') state.count = p.count;
+      if (Array.isArray(p.names)) state.names = p.names;
+      if (p.blobId) state.blobId = p.blobId;
+      if (p.isHost) state.isHost = p.isHost;
+      if (p.myName) state.myName = p.myName;
+    } catch (e) {}
+  }
+
+  function clearLocal() {
+    localStorage.removeItem(LS_KEY);
+  }
+
+  // ---------- API (jsonblob.com) ----------
+  async function apiCreate(data) {
+    const res = await fetch(API_BASE, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    // jsonblob.com exposes the new blob ID via X-Jsonblob header (CORS-exposed)
+    // and also via the Location header (may be blocked by CORS in some browsers).
+    let loc = res.headers.get('X-Jsonblob') || res.headers.get('x-jsonblob') ||
+              res.headers.get('Location') || res.headers.get('location');
+    if (!loc && res.url && res.url !== API_BASE) loc = res.url;
+    if (!loc) throw new Error('Could not read new room ID from response');
+    const id = loc.split('/').pop().trim();
+    if (!id || !/^\d+$/.test(id)) throw new Error('Invalid room ID: ' + loc);
+    return id;
+  }
+
+  async function apiRead(id) {
+    const res = await fetch(`${API_BASE}/${id}`, {
+      headers: { 'Accept': 'application/json' },
+    });
+    if (!res.ok) return null;
+    return await res.json();
+  }
+
+  async function apiDelete(id) {
+    try {
+      await fetch(`${API_BASE}/${id}`, { method: 'DELETE' });
+    } catch (e) {}
+  }
+
+  // ---------- NAVIGATION ----------
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    const el = document.getElementById(id);
+    if (el) el.classList.add('active');
+    window.scrollTo(0, 0);
+    if (id === 'investigate-select') renderInvestigatePickList();
+  }
+
+  function toast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => t.classList.remove('show'), 1600);
+  }
+
+  // ---------- HOST SETUP ----------
+  function goHostSetup() {
+    state.isHost = true;
+    state.blobId = null;
+    state.myName = null;
+    if (!state.names) state.names = [];
+    renderNames();
+    updateDistribution();
+    showScreen('setup-screen');
+  }
+
+  function renderNames() {
+    const list = document.getElementById('names-list');
+    list.innerHTML = '';
+    for (let i = 0; i < state.count; i++) {
+      const row = document.createElement('div');
+      row.className = 'name-row';
+      const num = document.createElement('span');
+      num.className = 'name-num';
+      num.textContent = String(i+1).padStart(2,'0');
+      const input = document.createElement('input');
+      input.className = 'name-input';
+      input.type = 'text';
+      input.placeholder = `Player ${i+1}`;
+      input.value = state.names[i] || '';
+      input.oninput = (e) => { state.names[i] = e.target.value; };
+      row.appendChild(num);
+      row.appendChild(input);
+      list.appendChild(row);
+    }
+  }
+
+  function updateDistribution() {
+    const d = DISTRIBUTION[state.count];
+    if (!d) return;
+    document.getElementById('dist-liberal').textContent = d.l;
+    document.getElementById('dist-fascist').textContent = d.f;
+    document.getElementById('dist-hitler').textContent = d.h;
+    document.getElementById('count-display').textContent = state.count;
+  }
+
+  function changeCount(delta) {
+    const newCount = state.count + delta;
+    if (newCount < 5 || newCount > 12) return;
+    state.count = newCount;
+    state.names = state.names.slice(0, state.count);
+    updateDistribution();
+    renderNames();
+  }
+
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  // ---------- DEAL & CREATE ROOM ----------
+  async function dealAndShare() {
+    const finalNames = [];
+    for (let i = 0; i < state.count; i++) {
+      const name = (state.names[i] || '').trim();
+      finalNames.push(name || `Player ${i+1}`);
+    }
+    state.names = finalNames;
+
+    const d = DISTRIBUTION[state.count];
+    const roleList = [
+      ...Array(d.l).fill('liberal'),
+      ...Array(d.f).fill('fascist'),
+      'hitler'
+    ];
+    const shuffled = shuffle(roleList);
+    state.roles = finalNames.map((name, i) => ({ name, role: shuffled[i] }));
+
+    const btn = document.getElementById('deal-btn');
+    btn.disabled = true;
+    const origText = btn.textContent;
+    btn.innerHTML = '<span class="loader"></span>Creating Room...';
+
+    try {
+      const id = await apiCreate({
+        count: state.count,
+        players: state.roles,
+        createdAt: Date.now(),
+      });
+      state.blobId = id;
+      state.isHost = true;
+      state.myName = null;
+      saveLocal();
+      window.location.hash = id;
+      showShareScreen();
+    } catch (e) {
+      alert('Could not create the room. Check your internet connection and try again.\n\n' + e.message);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = origText;
+    }
+  }
+
+  function buildShareUrl() {
+    return window.location.origin + window.location.pathname + '#' + state.blobId;
+  }
+
+  function showShareScreen() {
+    const url = buildShareUrl();
+    document.getElementById('share-code-text').textContent = url;
+    document.getElementById('qr-img').src =
+      `https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=0&bgcolor=ede4d3&color=1a1614&data=${encodeURIComponent(url)}`;
+    showScreen('share-screen');
+  }
+
+  async function copyShareLink() {
+    const url = buildShareUrl();
+    let copied = false;
+    try {
+      await navigator.clipboard.writeText(url);
+      copied = true;
+    } catch (e) {
+      try {
+        const ta = document.createElement('textarea');
+        ta.value = url;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        copied = true;
+      } catch (e2) {}
+    }
+    if (copied) {
+      toast('Link copied');
+    } else {
+      prompt('Copy this link:', url);
+    }
+  }
+
+  // ---------- JOIN (PLAYER) ----------
+  async function joinByCode() {
+    let val = document.getElementById('join-code-input').value.trim();
+    if (!val) return;
+    // If user pasted a URL, extract the hash
+    if (val.includes('#')) val = val.split('#').pop();
+    if (val.includes('/')) val = val.split('/').pop();
+    await joinByBlobId(val);
+  }
+
+  async function joinByBlobId(id) {
+    document.getElementById('loading-text').textContent = 'Joining room...';
+    showScreen('loading-screen');
+    try {
+      const data = await apiRead(id);
+      if (!data || !Array.isArray(data.players)) {
+        alert('Game not found. Ask the host for a new link.');
+        showScreen('home-screen');
+        return;
+      }
+      const wasHost = state.isHost && state.blobId === id;
+      state.blobId = id;
+      state.roles = data.players;
+      state.count = data.count || data.players.length;
+      if (!wasHost) state.isHost = false;
+      saveLocal();
+      window.location.hash = id;
+
+      if (state.myName) {
+        const p = state.roles.find(r => r.name === state.myName);
+        if (p) {
+          if (state.isHost) {
+            showScreen('host-hub');
+          } else {
+            showScreen('player-hub');
+          }
+          return;
+        }
+        // Saved name not in this game anymore
+        state.myName = null;
+        saveLocal();
+      }
+      showPickName();
+    } catch (e) {
+      alert('Could not join the room. Check your connection.\n' + e.message);
+      showScreen('home-screen');
+    }
+  }
+
+  function showPickName() {
+    const list = document.getElementById('join-pick-list');
+    list.innerHTML = '';
+    state.roles.forEach((p, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'player-pick-btn';
+      const num = document.createElement('span');
+      num.className = 'num';
+      num.textContent = String(i+1).padStart(2,'0');
+      const nameSpan = document.createElement('span');
+      nameSpan.textContent = p.name;
+      btn.appendChild(num);
+      btn.appendChild(nameSpan);
+      btn.onclick = () => {
+        state.myName = p.name;
+        saveLocal();
+        showRoleForPlayer(p);
+      };
+      list.appendChild(btn);
+    });
+    document.getElementById('pick-back-btn').textContent =
+      state.isHost ? 'Back to Host Hub' : 'Leave Game';
+    document.getElementById('pick-back-btn').onclick =
+      state.isHost ? () => showScreen('host-hub') : leaveGame;
+    showScreen('pick-name-screen');
+  }
+
+  function showRoleForPlayer(p) {
+    const roleScreen = document.getElementById('role-screen');
+    const title = document.getElementById('role-title');
+    const info = document.getElementById('role-info');
+    const teamList = document.getElementById('team-list');
+    const teamContent = document.getElementById('team-list-content');
+    const teamTitle = document.getElementById('team-list-title');
+
+    roleScreen.className = 'screen role-screen active';
+    title.className = 'role-title';
+
+    if (p.role === 'liberal') {
+      roleScreen.classList.add('liberal-bg');
+      title.classList.add('liberal');
+      title.textContent = 'Liberal';
+      info.textContent = 'You stand for democracy. Enact five Liberal policies, or hunt down and assassinate Hitler.';
+      teamList.style.display = 'none';
+    } else if (p.role === 'fascist') {
+      roleScreen.classList.add('fascist-bg');
+      title.classList.add('fascist');
+      title.textContent = 'Fascist';
+      info.textContent = 'Sow distrust. Help Hitler rise. Enact six Fascist policies, or get Hitler elected Chancellor after the third Fascist policy.';
+      const others = state.roles.filter(r =>
+        r.name !== p.name && (r.role === 'fascist' || r.role === 'hitler')
+      );
+      teamTitle.textContent = 'Your fellow fascists';
+      teamContent.innerHTML = others.map(o =>
+        `<div class="team-member">${escapeHtml(o.name)}${o.role === 'hitler' ? '<span class="tag">HITLER</span>' : ''}</div>`
+      ).join('');
+      teamList.style.display = 'block';
+    } else if (p.role === 'hitler') {
+      roleScreen.classList.add('hitler-bg');
+      title.classList.add('hitler');
+      title.textContent = 'Hitler';
+      if (state.count >= 7) {
+        info.textContent = 'Your fascists know you. You do not know them. Play coy, win their trust, and get elected Chancellor after three Fascist policies.';
+        teamList.style.display = 'none';
+      } else {
+        const fascist = state.roles.find(r => r.role === 'fascist');
+        info.textContent = 'You and your fascist work together.';
+        teamTitle.textContent = 'Your fascist';
+        teamContent.innerHTML = `<div class="team-member">${escapeHtml(fascist.name)}</div>`;
+        teamList.style.display = 'block';
+      }
+    }
+    showScreen('role-screen');
+  }
+
+  function hideRoleAfterReveal() {
+    if (state.isHost) {
+      showScreen('host-hub');
+    } else {
+      showScreen('player-hub');
+    }
+  }
+
+  function reshowMyRole() {
+    if (!state.myName) {
+      showPickName();
+      return;
+    }
+    const p = state.roles.find(r => r.name === state.myName);
+    if (p) {
+      showRoleForPlayer(p);
+    } else {
+      showPickName();
+    }
+  }
+
+  function hostViewOwnRole() {
+    showPickName();
+  }
+
+  function leaveGame() {
+    if (!confirm('Leave this game on this device? Your role will be forgotten here.')) return;
+    state.blobId = null;
+    state.myName = null;
+    state.roles = [];
+    state.isHost = false;
+    clearLocal();
+    if (window.location.hash) {
+      history.replaceState(null, '', window.location.pathname);
+    }
+    showScreen('home-screen');
+  }
+
+  async function resetGame() {
+    if (!confirm('Reset the game? This deletes the room for everyone. You will return to setup.')) return;
+    if (state.blobId) {
+      await apiDelete(state.blobId);
+    }
+    state.blobId = null;
+    state.myName = null;
+    state.roles = [];
+    state.isHost = true;
+    saveLocal();
+    if (window.location.hash) {
+      history.replaceState(null, '', window.location.pathname);
+    }
+    renderNames();
+    updateDistribution();
+    showScreen('setup-screen');
+  }
+
+  // ---------- INVESTIGATE ----------
+  function renderInvestigatePickList() {
+    const list = document.getElementById('player-pick-list');
+    list.innerHTML = '';
+    state.roles.forEach((p, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'player-pick-btn';
+      const num = document.createElement('span');
+      num.className = 'num';
+      num.textContent = String(i+1).padStart(2,'0');
+      const nameSpan = document.createElement('span');
+      nameSpan.textContent = p.name;
+      btn.appendChild(num);
+      btn.appendChild(nameSpan);
+      btn.onclick = () => {
+        investigateTargetIdx = i;
+        document.getElementById('investigate-name').textContent = p.name;
+        showScreen('investigate-reveal');
+      };
+      list.appendChild(btn);
+    });
+  }
+
+  function revealParty() {
+    const p = state.roles[investigateTargetIdx];
+    const party = (p.role === 'liberal') ? 'liberal' : 'fascist';
+
+    const screen = document.getElementById('investigate-result');
+    const title = document.getElementById('investigate-result-title');
+    const info = document.getElementById('investigate-result-info');
+
+    screen.className = 'screen role-screen active';
+    title.className = 'role-title';
+
+    if (party === 'liberal') {
+      screen.classList.add('liberal-bg');
+      title.classList.add('liberal');
+      title.textContent = 'Liberal';
+      info.textContent = `${p.name}'s party card reads Liberal.`;
+    } else {
+      screen.classList.add('fascist-bg');
+      title.classList.add('fascist');
+      title.textContent = 'Fascist';
+      info.textContent = `${p.name}'s party card reads Fascist.`;
+    }
+    showScreen('investigate-result');
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    }[c]));
+  }
+
+  // ---------- INIT ----------
+  async function init() {
+    loadLocal();
+    updateDistribution();
+    renderNames();
+
+    const hash = window.location.hash.slice(1);
+
+    if (hash) {
+      // Coming in via shared link
+      await joinByBlobId(hash);
+      return;
+    }
+
+    if (state.blobId) {
+      // Resume previous session
+      document.getElementById('loading-text').textContent = 'Resuming session...';
+      showScreen('loading-screen');
+      const data = await apiRead(state.blobId);
+      if (data && Array.isArray(data.players)) {
+        state.roles = data.players;
+        state.count = data.count || data.players.length;
+        window.location.hash = state.blobId;
+        if (state.isHost) {
+          showScreen('host-hub');
+        } else if (state.myName) {
+          showScreen('player-hub');
+        } else {
+          showPickName();
+        }
+      } else {
+        // Room gone
+        clearLocal();
+        state.blobId = null;
+        state.myName = null;
+        state.isHost = false;
+        showScreen('home-screen');
+      }
+      return;
+    }
+
+    showScreen('home-screen');
+  }
+
+  init();
+</script>
 </body>
 </html>
