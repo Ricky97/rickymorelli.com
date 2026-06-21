@@ -7,209 +7,191 @@
 <meta name="description" content="Ricky Morelli — personal site." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet" />
 <style>
   :root {
-    --paper:   #e9e3d6;  /* aged cream */
-    --paper-2: #e3dccb;
-    --ink:     #1b1a17;
-    --orange:  #e8531f;  /* vermillion */
-    --blue:    #2f2ce0;  /* pigeon blue */
-    --teal:    #2c6f73;  /* muted boat teal */
+    --paper:    #ded7c4;  /* aged sun-bleached paper */
+    --paper-hi: #e7e1d0;
+    --ink:      #2e2a22;
+    --orange:   #cf5a31;  /* faded terracotta-vermillion */
+    --water:    #2f6f6f;  /* muted boat teal */
+    --water-dk: #245658;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
   html, body { height: 100%; }
 
   body {
     background: var(--paper);
     color: var(--ink);
-    font-family: 'Archivo', system-ui, sans-serif;
+    font-family: 'Anton', system-ui, sans-serif;
     overflow: hidden;
     position: relative;
     -webkit-font-smoothing: antialiased;
   }
 
-  /* ---------- paper texture + grain ---------- */
-  .grain {
+  /* ---------- water (lower band, like the lake) ---------- */
+  .water {
     position: fixed;
-    inset: -50%;
-    width: 200%;
-    height: 200%;
-    pointer-events: none;
-    z-index: 40;
-    opacity: 0.5;
-    mix-blend-mode: multiply;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    animation: grain 0.6s steps(2) infinite;
-  }
-  @keyframes grain {
-    0%   { transform: translate(0, 0); }
-    50%  { transform: translate(-2%, 1%); }
-    100% { transform: translate(1%, -1%); }
-  }
-
-  /* subtle vignette so the paper feels printed */
-  .vignette {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 30;
-    background: radial-gradient(120% 120% at 50% 40%, transparent 55%, rgba(27,26,23,0.16) 100%);
-    mix-blend-mode: multiply;
-  }
-
-  /* ---------- halftone backdrop ---------- */
-  .halftone {
-    position: fixed;
-    z-index: 1;
-    top: 50%;
-    left: 50%;
-    width: min(78vh, 92vw);
-    height: min(78vh, 92vw);
-    transform: translate(-50%, -54%);
-    will-change: transform;
+    left: 0; right: 0; bottom: 0;
+    height: 42%;
+    z-index: 2;
     background:
-      radial-gradient(circle at center, var(--blue) 0 1.6px, transparent 1.9px);
-    background-size: 9px 9px;
-    -webkit-mask-image: radial-gradient(circle at 50% 42%, #000 0%, #000 30%, rgba(0,0,0,0.55) 52%, transparent 72%);
-            mask-image: radial-gradient(circle at 50% 42%, #000 0%, #000 30%, rgba(0,0,0,0.55) 52%, transparent 72%);
-    opacity: 0.9;
+      linear-gradient(180deg,
+        var(--water) 0%,
+        var(--water) 30%,
+        var(--water-dk) 100%);
+    box-shadow: inset 0 3px 0 rgba(46,42,34,0.25);
   }
-
-  /* ---------- frame / corner labels ---------- */
-  .frame {
-    position: fixed;
-    inset: 0;
-    z-index: 20;
-    pointer-events: none;
-  }
-  .label {
+  /* faint horizontal ripples on the water */
+  .water::after {
+    content: "";
     position: absolute;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: clamp(9px, 1.05vw, 12px);
-    letter-spacing: 0.16em;
-    color: var(--orange);
-    text-transform: uppercase;
-    line-height: 1.5;
-  }
-  .label .dim { color: var(--ink); opacity: 0.55; }
-  .tl { top: clamp(18px, 3.5vh, 40px);    left: clamp(18px, 3.5vw, 44px); }
-  .tr { top: clamp(18px, 3.5vh, 40px);    right: clamp(18px, 3.5vw, 44px); text-align: right; }
-  .bl { bottom: clamp(18px, 3.5vh, 40px); left: clamp(18px, 3.5vw, 44px); }
-  .br { bottom: clamp(18px, 3.5vh, 40px); right: clamp(18px, 3.5vw, 44px); text-align: right; }
-
-  .rule {
-    position: fixed;
-    z-index: 20;
-    pointer-events: none;
-    background: var(--ink);
-    opacity: 0.85;
-  }
-  .rule-top { top: clamp(58px, 9vh, 96px); left: clamp(18px, 3.5vw, 44px); right: clamp(18px, 3.5vw, 44px); height: 2px; }
-
-  .kicker {
-    position: fixed;
-    z-index: 21;
-    top: clamp(66px, 10vh, 108px);
-    left: clamp(18px, 3.5vw, 44px);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: clamp(9px, 1vw, 12px);
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--ink);
+    inset: 0;
+    background: repeating-linear-gradient(
+      180deg,
+      rgba(255,255,255,0.05) 0px,
+      rgba(255,255,255,0.05) 1px,
+      transparent 1px,
+      transparent 16px);
     opacity: 0.7;
+    animation: ripple 9s ease-in-out infinite alternate;
+  }
+  @keyframes ripple {
+    from { transform: translateY(0); }
+    to   { transform: translateY(6px); }
   }
 
-  /* ---------- the name ---------- */
+  /* ---------- name ---------- */
   .stage {
     position: fixed;
     inset: 0;
     z-index: 10;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    /* lift the name so its baseline rides just above the waterline */
+    padding-bottom: 26vh;
   }
   .name {
-    font-family: 'Anton', 'Archivo', sans-serif;
-    font-weight: 400;
+    font-family: 'Anton', sans-serif;
     color: var(--orange);
-    font-size: clamp(5.5rem, 34vw, 28rem);
-    line-height: 0.82;
-    letter-spacing: -0.02em;
+    font-size: clamp(5rem, 30vw, 24rem);
+    line-height: 0.86;
+    letter-spacing: 0.005em;
     text-transform: uppercase;
-    margin-top: 1vh;
     will-change: transform;
-    /* faint ink overprint shadow for the printed/registration feel */
-    text-shadow: 0.012em 0.014em 0 rgba(47,44,224,0.16);
+    text-shadow: 0.01em 0.012em 0 rgba(46,42,34,0.18);
   }
 
-  /* ---------- entrance animation ---------- */
-  .reveal { opacity: 0; transform: translateY(14px); animation: rise 1.1s cubic-bezier(.16,.84,.32,1) forwards; }
-  .d1 { animation-delay: 0.15s; }
-  .d2 { animation-delay: 0.30s; }
-  .d3 { animation-delay: 0.42s; }
-  .d4 { animation-delay: 0.52s; }
-  @keyframes rise { to { opacity: 1; transform: translateY(0); } }
-  .name.reveal { animation-name: riseName; }
-  @keyframes riseName {
-    0%   { opacity: 0; transform: translateY(40px) scale(0.985); }
-    100% { opacity: 1; transform: translateY(0)   scale(1); }
+  /* mirrored reflection sitting on the water */
+  .reflection {
+    position: fixed;
+    left: 0; right: 0;
+    bottom: 42%;
+    z-index: 3;
+    display: flex;
+    justify-content: center;
+    pointer-events: none;
+    transform: scaleY(-1) translateY(-2px);
+    transform-origin: bottom center;
+    opacity: 0.16;
+    -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 70%);
+            mask-image: linear-gradient(180deg, #000 0%, transparent 70%);
   }
+  .reflection .name {
+    color: #ffffff;
+    text-shadow: none;
+    animation: shimmer 7s ease-in-out infinite alternate;
+  }
+  @keyframes shimmer {
+    from { opacity: 0.9; transform: skewX(-1.2deg); }
+    to   { opacity: 1;   transform: skewX(1.2deg); }
+  }
+
+  /* ---------- aged paper texture, grain, vignette ---------- */
+  .grain {
+    position: fixed;
+    inset: -50%;
+    width: 200%; height: 200%;
+    pointer-events: none;
+    z-index: 40;
+    opacity: 0.4;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    animation: grain 0.7s steps(2) infinite;
+  }
+  @keyframes grain {
+    0%   { transform: translate(0,0); }
+    50%  { transform: translate(-2%,1%); }
+    100% { transform: translate(1%,-1%); }
+  }
+
+  /* soft stains / uneven aging on the paper */
+  .stains {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background:
+      radial-gradient(40% 30% at 18% 20%, rgba(120,100,60,0.10), transparent 70%),
+      radial-gradient(50% 40% at 85% 12%, rgba(120,100,60,0.08), transparent 70%),
+      radial-gradient(35% 35% at 70% 55%, rgba(90,70,40,0.06), transparent 70%);
+    mix-blend-mode: multiply;
+  }
+
+  .vignette {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 30;
+    background: radial-gradient(120% 110% at 50% 45%, transparent 58%, rgba(46,42,34,0.20) 100%);
+    mix-blend-mode: multiply;
+  }
+
+  /* ---------- entrance ---------- */
+  .reveal { opacity: 0; transform: translateY(40px) scale(0.99); animation: rise 1.2s cubic-bezier(.16,.84,.32,1) 0.2s forwards; }
+  @keyframes rise { to { opacity: 1; transform: translateY(0) scale(1); } }
+
+  .water.reveal-w { opacity: 0; transform: translateY(30%); animation: floodIn 1.3s cubic-bezier(.16,.84,.32,1) 0.1s forwards; }
+  @keyframes floodIn { to { opacity: 1; transform: translateY(0); } }
 
   @media (prefers-reduced-motion: reduce) {
-    .grain { animation: none; }
-    .reveal, .name.reveal { animation: none; opacity: 1; transform: none; }
+    .grain, .water::after, .reflection .name { animation: none; }
+    .reveal, .water.reveal-w { animation: none; opacity: 1; transform: none; }
+    .water.reveal-w { transform: none; }
   }
 </style>
 </head>
 <body>
-  <div class="halftone" id="halftone"></div>
+  <div class="stains"></div>
+  <div class="water reveal-w"></div>
+
+  <div class="reflection"><span class="name">Ricky</span></div>
 
   <main class="stage">
-    <h1 class="name reveal d2" id="name">Ricky</h1>
+    <h1 class="name reveal" id="name">Ricky</h1>
   </main>
-
-  <div class="frame">
-    <div class="label tl reveal d1">BM&nbsp;&nbsp;0621<br /><span class="dim">PERSONAL&nbsp;SITE</span></div>
-    <div class="label tr reveal d1">EST.&nbsp;2026<br /><span class="dim">MORELLI</span></div>
-    <div class="label bl reveal d3">No&nbsp;agenda.<br /><span class="dim">Just&nbsp;Ricky.</span></div>
-    <div class="label br reveal d4" style="font-size: clamp(13px,1.6vw,20px); letter-spacing:0.08em;">.001</div>
-  </div>
-
-  <div class="rule rule-top reveal d1"></div>
-  <div class="kicker reveal d2">Concept&nbsp;Poster&nbsp;Series&nbsp;&nbsp;·&nbsp;&nbsp;Issue&nbsp;No.&nbsp;01</div>
 
   <div class="vignette"></div>
   <div class="grain"></div>
 
   <script>
-    // Subtle cursor parallax — halftone drifts opposite the name for depth.
+    // gentle cursor parallax — name drifts, kept off until the entrance settles
     (function () {
-      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (reduce) return;
-      var ht = document.getElementById('halftone');
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
       var name = document.getElementById('name');
-      var tx = 0, ty = 0, cx = 0, cy = 0;
-      var nameReady = false;
-
-      // Let the entrance animation finish before the parallax touches the name's transform.
-      window.setTimeout(function () { nameReady = true; }, 1700);
-
+      var tx = 0, ty = 0, cx = 0, cy = 0, ready = false;
+      window.setTimeout(function () { ready = true; }, 1600);
       window.addEventListener('pointermove', function (e) {
-        var nx = (e.clientX / window.innerWidth  - 0.5);
-        var ny = (e.clientY / window.innerHeight - 0.5);
-        tx = nx; ty = ny;
+        tx = (e.clientX / window.innerWidth  - 0.5);
+        ty = (e.clientY / window.innerHeight - 0.5);
       });
-
       function frame() {
-        cx += (tx - cx) * 0.06;
-        cy += (ty - cy) * 0.06;
-        ht.style.transform = 'translate(-50%, -54%) translate(' + (cx * 26) + 'px,' + (cy * 26) + 'px)';
-        if (nameReady) {
-          name.style.transform = 'translate(' + (cx * -10) + 'px,' + (cy * -10) + 'px)';
-        }
+        cx += (tx - cx) * 0.05;
+        cy += (ty - cy) * 0.05;
+        if (ready) name.style.transform = 'translate(' + (cx * 12) + 'px,' + (cy * 8) + 'px)';
         requestAnimationFrame(frame);
       }
       requestAnimationFrame(frame);
