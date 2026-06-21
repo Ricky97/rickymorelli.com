@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ricky — B</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;overflow:hidden;background:#070708;}
+  canvas{display:block;}
+  .hint{position:fixed;bottom:24px;left:0;right:0;text-align:center;
+    font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:0.35em;
+    text-transform:uppercase;color:#3aa;opacity:0.5;pointer-events:none;}
+</style>
+</head>
+<body>
+  <canvas id="c"></canvas>
+  <div class="hint">move&nbsp;·&nbsp;ricky&nbsp;morelli</div>
+  <script>
+  const cv=document.getElementById('c'),ctx=cv.getContext('2d');
+  let W,H,DPR,particles=[],mouse={x:-9999,y:-9999};
+
+  function build(){
+    DPR=Math.min(devicePixelRatio||1,2);
+    W=cv.width=innerWidth*DPR; H=cv.height=innerHeight*DPR;
+    cv.style.width=innerWidth+'px'; cv.style.height=innerHeight+'px';
+
+    // render the word to an offscreen buffer, then sample pixels
+    const off=document.createElement('canvas');
+    off.width=innerWidth; off.height=innerHeight;
+    const o=off.getContext('2d');
+    let fs=Math.min(innerWidth*0.30, innerHeight*0.46);
+    o.fillStyle='#fff';
+    o.textAlign='center'; o.textBaseline='middle';
+    o.font='900 '+fs+'px "Arial Black",Arial,sans-serif';
+    o.fillText('RICKY', innerWidth/2, innerHeight/2);
+
+    const img=o.getImageData(0,0,innerWidth,innerHeight).data;
+    particles=[];
+    const gap=Math.max(4, Math.round(innerWidth/260));
+    for(let y=0;y<innerHeight;y+=gap){
+      for(let x=0;x<innerWidth;x+=gap){
+        if(img[(y*innerWidth+x)*4+3]>128){
+          particles.push({
+            hx:x*DPR, hy:y*DPR,                          // home
+            x:Math.random()*W, y:Math.random()*H,        // start scattered
+            vx:0, vy:0
+          });
+        }
+      }
+    }
+  }
+
+  function tick(){
+    ctx.fillStyle='rgba(7,7,8,0.28)';
+    ctx.fillRect(0,0,W,H);
+    const mr=130*DPR;
+    for(let i=0;i<particles.length;i++){
+      const p=particles[i];
+      // spring home
+      let ax=(p.hx-p.x)*0.012, ay=(p.hy-p.y)*0.012;
+      // repel from cursor
+      const dx=p.x-mouse.x, dy=p.y-mouse.y, d2=dx*dx+dy*dy;
+      if(d2<mr*mr){
+        const d=Math.sqrt(d2)||1, f=(mr-d)/mr;
+        ax+=(dx/d)*f*6; ay+=(dy/d)*f*6;
+      }
+      p.vx=(p.vx+ax)*0.86; p.vy=(p.vy+ay)*0.86;
+      p.x+=p.vx; p.y+=p.vy;
+      const sp=Math.min(1,(Math.abs(p.vx)+Math.abs(p.vy))/8);
+      const g=Math.round(180+sp*75);
+      ctx.fillStyle='rgb('+Math.round(40+sp*120)+','+g+','+(200+Math.round(sp*55))+')';
+      ctx.fillRect(p.x,p.y,DPR*1.6,DPR*1.6);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  addEventListener('pointermove',e=>{mouse.x=e.clientX*DPR;mouse.y=e.clientY*DPR;});
+  addEventListener('pointerleave',()=>{mouse.x=mouse.y=-9999;});
+  addEventListener('resize',build);
+  build(); tick();
+  </script>
+</body>
+</html>

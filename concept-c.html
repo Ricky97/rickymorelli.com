@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ricky — C</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet" />
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;overflow:hidden;background:#08070c;}
+  body{font-family:'Archivo Black',sans-serif;position:relative;
+       perspective:900px;}
+
+  .wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+        transform-style:preserve-3d;will-change:transform;}
+
+  .glitch{position:relative;font-size:clamp(4.5rem,24vw,20rem);line-height:0.8;
+          letter-spacing:-0.03em;text-transform:uppercase;color:#f3f0ff;
+          text-shadow:0 0 24px rgba(120,90,255,0.35);}
+  .glitch::before,.glitch::after{
+    content:'RICKY';position:absolute;inset:0;}
+  .glitch::before{color:#ff2d6b;mix-blend-mode:screen;
+    animation:gl1 2.6s infinite steps(40);clip-path:inset(0 0 0 0);}
+  .glitch::after{color:#22e0e0;mix-blend-mode:screen;
+    animation:gl2 3.2s infinite steps(40);}
+  @keyframes gl1{
+    0%,100%{transform:translate(0,0)}
+    20%{transform:translate(-4px,2px)}
+    40%{transform:translate(3px,-2px);clip-path:inset(20% 0 50% 0)}
+    60%{transform:translate(-2px,1px)}
+    80%{transform:translate(4px,-1px);clip-path:inset(60% 0 10% 0)}
+  }
+  @keyframes gl2{
+    0%,100%{transform:translate(0,0)}
+    25%{transform:translate(3px,-2px);clip-path:inset(10% 0 70% 0)}
+    50%{transform:translate(-4px,2px)}
+    75%{transform:translate(2px,2px);clip-path:inset(70% 0 5% 0)}
+  }
+
+  /* occasional hard glitch slices on the whole word */
+  .glitch{animation:slice 5s infinite;}
+  @keyframes slice{
+    0%,92%,100%{clip-path:inset(0 0 0 0);transform:translateX(0)}
+    93%{clip-path:inset(30% 0 40% 0);transform:translateX(8px)}
+    95%{clip-path:inset(60% 0 10% 0);transform:translateX(-10px)}
+    97%{clip-path:inset(10% 0 75% 0);transform:translateX(6px)}
+  }
+
+  /* scanlines + grain overlay */
+  .scan{position:fixed;inset:0;z-index:5;pointer-events:none;
+    background:repeating-linear-gradient(180deg,rgba(0,0,0,0) 0 2px,rgba(0,0,0,0.28) 2px 3px);
+    mix-blend-mode:multiply;opacity:0.6;}
+  .glow{position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(60% 50% at 50% 50%,rgba(90,60,200,0.22),transparent 70%);}
+  .tag{position:fixed;bottom:6vh;left:0;right:0;text-align:center;z-index:6;
+    font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:0.5em;
+    text-transform:uppercase;color:#7c6cff;opacity:0.7;padding-left:0.5em;}
+</style>
+</head>
+<body>
+  <div class="glow"></div>
+  <div class="wrap" id="wrap"><div class="glitch">RICKY</div></div>
+  <div class="scan"></div>
+  <div class="tag">Ricky&nbsp;Morelli</div>
+  <script>
+    var wrap=document.getElementById('wrap'),rx=0,ry=0,tx=0,ty=0;
+    addEventListener('pointermove',function(e){
+      tx=(e.clientY/innerHeight-0.5)*-16;
+      ty=(e.clientX/innerWidth-0.5)*20;
+    });
+    (function loop(){rx+=(tx-rx)*0.06;ry+=(ty-ry)*0.06;
+      wrap.style.transform='rotateX('+rx+'deg) rotateY('+ry+'deg)';
+      requestAnimationFrame(loop);})();
+  </script>
+</body>
+</html>
