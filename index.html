@@ -4,15 +4,15 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Ricky Morelli</title>
-  <meta name="description" content="Ricky Morelli, based in Brisbane. Growth, paid media and creative for ecommerce brands.">
+  <meta name="description" content="Ricky Morelli. Growth, paid media and creative for ecommerce brands.">
   <meta name="author" content="Ricky Morelli">
   <link rel="canonical" href="https://www.rickymorelli.com/">
-  <meta name="color-scheme" content="light dark">
-  <meta name="theme-color" content="#f3f0e8">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#c3be92">
 
   <meta property="og:site_name" content="Ricky Morelli">
   <meta property="og:title" content="Ricky Morelli">
-  <meta property="og:description" content="Growth, paid media and creative for ecommerce brands. Based in Brisbane, Australia.">
+  <meta property="og:description" content="Growth, paid media and creative for ecommerce brands.">
   <meta property="og:type" content="profile">
   <meta property="og:url" content="https://www.rickymorelli.com/">
   <meta property="og:locale" content="en_AU">
@@ -21,18 +21,20 @@
   <meta property="og:image" content="https://www.rickymorelli.com/og.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Ricky Morelli, Brisbane. Growth, paid media and creative for ecommerce brands.">
+  <meta property="og:image:alt" content="Ricky Morelli. Growth, paid media and creative for ecommerce brands.">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Ricky Morelli">
-  <meta name="twitter:description" content="Growth, paid media and creative for ecommerce brands. Based in Brisbane, Australia.">
+  <meta name="twitter:description" content="Growth, paid media and creative for ecommerce brands.">
   <meta name="twitter:image" content="https://www.rickymorelli.com/og.png">
-  <meta name="twitter:image:alt" content="Ricky Morelli, Brisbane. Growth, paid media and creative for ecommerce brands.">
+  <meta name="twitter:image:alt" content="Ricky Morelli. Growth, paid media and creative for ecommerce brands.">
 
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
   <link rel="icon" type="image/png" href="/favicon-16.png" sizes="16x16">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-  <link rel="preload" href="/fonts/newsreader.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/archivo.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/lora.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/martian-mono.woff2" as="font" type="font/woff2" crossorigin>
 
   <script type="application/ld+json">
   {
@@ -42,14 +44,6 @@
     "url": "https://www.rickymorelli.com/",
     "description": "Growth, paid media and creative for ecommerce brands.",
     "email": "ricky@rickymorelli.com",
-    "homeLocation": {
-      "@type": "City",
-      "name": "Brisbane",
-      "containedInPlace": {
-        "@type": "Country",
-        "name": "Australia"
-      }
-    },
     "sameAs": [
       "https://www.linkedin.com/in/rickymorelli/",
       "https://substack.com/@rickymorelli"
@@ -57,72 +51,41 @@
   }
   </script>
 
-  <script>
-    (function () {
-      var theme = null;
-      try { theme = localStorage.getItem("theme"); } catch (e) {}
-      var dark = theme === "dark" || (theme !== "light" && window.matchMedia("(prefers-color-scheme: dark)").matches);
-      if (theme === "light" || theme === "dark") {
-        document.documentElement.setAttribute("data-theme", theme);
-      }
-      document.documentElement.classList.add("js");
-      var color = document.querySelector('meta[name="theme-color"]');
-      if (color) color.setAttribute("content", dark ? "#141311" : "#f3f0e8");
-    })();
-  </script>
-
   <style>
     @font-face {
-      font-family: "Newsreader";
-      src: url("/fonts/newsreader.woff2") format("woff2");
-      font-weight: 200 800;
+      font-family: "Archivo";
+      src: url("/fonts/archivo.woff2") format("woff2");
+      font-weight: 720;
       font-style: normal;
       font-display: swap;
-      unicode-range: U+0020-007E, U+00A0, U+00A9;
+      unicode-range: U+0020-007E;
+    }
+
+    @font-face {
+      font-family: "Lora";
+      src: url("/fonts/lora.woff2") format("woff2");
+      font-weight: 460;
+      font-style: normal;
+      font-display: swap;
+      unicode-range: U+0020-007E;
+    }
+
+    @font-face {
+      font-family: "Martian Mono";
+      src: url("/fonts/martian-mono.woff2") format("woff2");
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+      unicode-range: U+0020-007E;
     }
 
     :root {
+      --mist: #f8f6e8;
+      --khaki: #c3be92;
+      --bark: #463c2e;
+      --line: #463c2e4d;
+      --edge: 20px;
       color-scheme: light;
-      --bg: #f3f0e8;
-      --ink: #1c1916;
-      --muted: #5c564c;
-      --line: #b7ab96;
-      --accent: #8a3e24;
-      --hover: rgba(28, 25, 22, 0.045);
-      --todo: #5c420e;
-      --wash: rgba(138, 62, 36, 0.07);
-      --wash-2: rgba(36, 84, 80, 0.055);
-      --select: #e7cfc3;
-    }
-
-    :root[data-theme="dark"] {
-      color-scheme: dark;
-      --bg: #141311;
-      --ink: #f3efe7;
-      --muted: #c4bdb1;
-      --line: #4a443b;
-      --accent: #f0c2ae;
-      --hover: rgba(243, 239, 231, 0.06);
-      --todo: #f0d7a2;
-      --wash: rgba(240, 194, 174, 0.06);
-      --wash-2: rgba(120, 170, 164, 0.05);
-      --select: #5a3a2c;
-    }
-
-    @media (prefers-color-scheme: dark) {
-      :root:not([data-theme="light"]) {
-        color-scheme: dark;
-        --bg: #141311;
-        --ink: #f3efe7;
-        --muted: #c4bdb1;
-        --line: #4a443b;
-        --accent: #f0c2ae;
-        --hover: rgba(243, 239, 231, 0.06);
-        --todo: #f0d7a2;
-        --wash: rgba(240, 194, 174, 0.06);
-        --wash-2: rgba(120, 170, 164, 0.05);
-        --select: #5a3a2c;
-      }
     }
 
     *, *::before, *::after { box-sizing: border-box; }
@@ -132,28 +95,28 @@
     body {
       margin: 0;
       min-height: 100%;
-      background-color: var(--bg);
-      background-image:
-        radial-gradient(ellipse 90% 55% at 0% -10%, var(--wash), transparent 58%),
-        radial-gradient(ellipse 70% 45% at 100% 0%, var(--wash-2), transparent 52%);
-      color: var(--ink);
-      font-family: "Newsreader", "Iowan Old Style", Palatino, "Palatino Linotype", Georgia, serif;
-      font-weight: 440;
-      font-size: 1.125rem;
-      line-height: 1.5;
-      font-optical-sizing: auto;
+      min-height: 100svh;
+      display: flex;
+      background: var(--khaki);
+      color: var(--bark);
+      font-family: "Lora", "Iowan Old Style", Palatino, Georgia, serif;
+      font-weight: 460;
+      font-size: 1.25rem;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
       text-rendering: optimizeLegibility;
       -webkit-font-smoothing: antialiased;
-      padding:
-        env(safe-area-inset-top)
-        env(safe-area-inset-right)
-        env(safe-area-inset-bottom)
-        env(safe-area-inset-left);
     }
 
-    ::selection {
-      background: var(--select);
-      color: var(--ink);
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 2;
+      background:
+        linear-gradient(var(--line), var(--line)) var(--edge) 0 / 0.5px 100% no-repeat,
+        linear-gradient(var(--line), var(--line)) calc(100% - var(--edge)) 0 / 0.5px 100% no-repeat;
     }
 
     .skip {
@@ -161,188 +124,124 @@
       left: 1rem;
       top: 0.75rem;
       transform: translateY(-150%);
-      background: var(--ink);
-      color: var(--bg);
-      padding: 0.55rem 0.8rem;
+      background: var(--bark);
+      color: var(--mist);
+      padding: 0.55rem 0.75rem;
       z-index: 5;
       text-decoration: none;
-      border-radius: 4px;
+      font-family: "Martian Mono", ui-monospace, monospace;
+      font-size: 0.75rem;
+      letter-spacing: -0.04em;
+      text-transform: uppercase;
     }
 
     .skip:focus {
       transform: none;
-      outline: 2px solid var(--accent);
+      outline: 2px solid var(--bark);
       outline-offset: 3px;
     }
 
-    .page {
+    main {
       position: relative;
-      width: min(38rem, 100%);
-      margin-inline: auto;
-      padding: 4.75rem 1.25rem 3.25rem;
+      z-index: 1;
+      width: min(40rem, 100%);
+      margin: auto;
+      padding: 4rem 1.35rem 3rem;
+      text-align: center;
     }
 
-    .theme {
-      display: none;
-      position: absolute;
-      top: 1rem;
-      right: 1.25rem;
-      align-items: center;
-      min-height: 44px;
-      padding: 0.35rem 0.9rem;
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      background: transparent;
-      color: var(--muted);
-      font: inherit;
-      font-size: 0.95rem;
-      letter-spacing: 0.01em;
-      cursor: pointer;
-    }
-
-    .js .theme { display: inline-flex; }
-
-    .theme:hover {
-      color: var(--ink);
-      border-color: var(--ink);
-    }
-
-    .theme:focus-visible,
-    .rows a:focus-visible {
-      outline: 2px solid var(--ink);
-      outline-offset: 3px;
-    }
-
-    .when-dark { display: none; }
-
-    :root[data-theme="dark"] .when-light { display: none; }
-    :root[data-theme="dark"] .when-dark { display: inline; }
-
-    @media (prefers-color-scheme: dark) {
-      :root:not([data-theme="light"]) .when-light { display: none; }
-      :root:not([data-theme="light"]) .when-dark { display: inline; }
-    }
-
-    h1, h2, p { margin: 0; }
+    h1, p { margin: 0; }
 
     h1 {
-      font-weight: 470;
-      font-size: clamp(3.7rem, 15vw, 6.25rem);
-      line-height: 0.92;
-      letter-spacing: -0.03em;
-    }
-
-    h1 .break {
-      display: block;
-      margin-top: 0.12em;
-    }
-
-    .location {
-      margin-top: 1.15rem;
-      color: var(--muted);
-      font-size: 1.05rem;
+      font-family: "Archivo", "Arial Narrow", "Helvetica Neue", sans-serif;
+      font-weight: 720;
+      font-size: clamp(2.65rem, 13.2vw, 6.25rem);
+      line-height: 0.86;
+      letter-spacing: -0.05em;
     }
 
     .lede {
-      margin-top: 1.4rem;
-      max-width: 26em;
-      font-size: clamp(1.25rem, 2.5vw, 1.5rem);
-      line-height: 1.35;
-      letter-spacing: -0.015em;
-      text-wrap: pretty;
+      max-width: 18em;
+      margin: 2.25rem auto 0;
+      font-size: clamp(1.15rem, 2.4vw, 1.5rem);
+      text-wrap: balance;
     }
 
-    section {
-      margin-top: 2.75rem;
-      padding-top: 1.2rem;
-      border-top: 1px solid var(--line);
-    }
-
-    h2 {
-      font-size: 1.4rem;
-      font-weight: 560;
-      letter-spacing: -0.02em;
-      line-height: 1.2;
-    }
-
-    .note {
-      margin-top: 0.35rem;
-      color: var(--muted);
-      text-wrap: pretty;
-    }
-
-    .rows {
-      list-style: none;
-      margin: 0.85rem 0 0;
-      padding: 0;
-    }
-
-    .rows li { border-top: 1px solid var(--line); }
-
-    .rows a,
-    .placeholder {
+    .links {
       display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: 1rem;
-      min-height: 48px;
-      margin: 0 -0.55rem;
-      padding: 0.85rem 0.55rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0.25rem 1.5rem;
+      margin: 2rem 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .links a,
+    .agent {
       color: inherit;
       text-decoration: none;
     }
 
-    .rows a:hover,
-    .rows a:active { background: var(--hover); }
-
-    .label {
-      text-decoration: underline;
-      text-decoration-thickness: 1px;
-      text-underline-offset: 0.18em;
-    }
-
-    .rows a:hover .label { color: var(--accent); }
-
-    .meta {
-      color: var(--muted);
-      font-size: 1rem;
-      text-align: right;
-    }
-
-    .ext {
-      width: 0.72em;
-      height: 0.72em;
-      margin-left: 0.2em;
-      vertical-align: 0.05em;
-      display: inline-block;
-    }
-
-    .placeholder {
-      margin-bottom: 0;
-      color: var(--todo);
-      cursor: default;
-    }
-
-    .tag {
-      display: inline-block;
-      margin-right: 0.55rem;
-      padding: 0.08rem 0.42rem 0.12rem;
-      border: 1px solid currentColor;
-      border-radius: 999px;
-      font-size: 0.68rem;
-      font-weight: 650;
-      letter-spacing: 0.12em;
-      line-height: 1.4;
+    .links a {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      padding: 0.65rem 0.1rem;
+      font-family: "Martian Mono", ui-monospace, monospace;
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: -0.06em;
+      line-height: 1.3;
       text-transform: uppercase;
-      vertical-align: 0.12em;
     }
 
-    .colophon {
-      margin-top: 2.75rem;
-      padding-top: 1rem;
-      border-top: 1px solid var(--line);
-      color: var(--muted);
-      font-size: 0.98rem;
+    .links a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0.55rem;
+      height: 1px;
+      background: currentColor;
+      transform: scaleX(0);
+      transform-origin: left center;
+    }
+
+    .links a:hover::after,
+    .links a:focus-visible::after {
+      transform: scaleX(1);
+    }
+
+    .agent {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.25rem;
+      width: min(100%, 22rem);
+      min-height: 52px;
+      margin: 2.5rem auto 0;
+      padding: 0.9rem 1rem;
+      background: var(--bark);
+      color: var(--mist);
+      font-family: "Martian Mono", ui-monospace, monospace;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    .agent svg {
+      width: 12px;
+      height: 10px;
+      flex: none;
+    }
+
+    a:focus-visible {
+      outline: 2px solid var(--bark);
+      outline-offset: 4px;
     }
 
     .sr-only {
@@ -357,136 +256,57 @@
       border: 0;
     }
 
-    @media (max-width: 560px) {
-      .rows a,
-      .placeholder {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.15rem;
-      }
-
-      .meta { text-align: left; }
+    @media (max-width: 900px) {
+      :root { --edge: 10px; }
     }
 
-    @media (min-width: 800px) {
-      .page {
-        padding-top: 6.25rem;
-        padding-bottom: 4.5rem;
-      }
-
-      .theme { top: 1.75rem; }
+    @media (min-width: 900px) {
+      .lede { margin-top: 3rem; }
+      .links { margin-top: 2.5rem; }
+      .agent { margin-top: 3rem; }
     }
 
     @media (prefers-reduced-motion: no-preference) {
-      .rows a,
-      .theme {
-        transition: background-color 140ms ease, color 140ms ease, border-color 140ms ease;
+      .links a::after,
+      .agent {
+        transition: transform 300ms ease, opacity 300ms ease;
       }
     }
 
+    @media (hover: hover) {
+      .agent:hover { opacity: 0.82; }
+    }
+
     @media print {
-      .theme, .skip { display: none !important; }
-      body { background: #fff; color: #000; }
-      a { text-decoration: underline; }
-      .rows a[href^="http"]::after {
-        content: " (" attr(href) ")";
-        font-size: 0.85em;
-      }
+      body { background: #fff; }
+      body::before, .skip { display: none; }
+      .agent { border: 1px solid #000; }
     }
   </style>
 </head>
 <body>
   <a class="skip" href="#content">Skip to content</a>
-
-  <div class="page">
-    <button type="button" class="theme" id="theme" aria-pressed="false">
-      <span class="when-light">Dark mode</span>
-      <span class="when-dark">Light mode</span>
-    </button>
-
-    <main id="content">
-      <header class="intro">
-        <h1>Ricky <span class="break">Morelli</span></h1>
-        <p class="location">Brisbane, Australia</p>
-        <p class="lede">Growth, paid media and creative for ecommerce brands. Google Ads, Meta and YouTube.</p>
-      </header>
-
-      <section aria-labelledby="writing-title">
-        <h2 id="writing-title">Writing</h2>
-        <p class="note">Notes on ad tech and marketing.</p>
-        <ul class="rows">
-          <li>
-            <a href="https://substack.com/@rickymorelli" rel="me noopener noreferrer" target="_blank">
-              <span class="label">Substack<svg class="ext" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.5 11.5 11.5 4.5M6.5 4.5h5v5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="sr-only"> (opens in a new tab)</span></span>
-              <span class="meta">@rickymorelli</span>
-            </a>
-          </li>
-          <li>
-            <!-- TODO: Replace this row with the title and URL of a piece on ad tech or marketing. -->
-            <p class="placeholder">
-              <span><span class="tag">TODO</span>Add a link to a piece on ad tech or marketing.</span>
-            </p>
-          </li>
-        </ul>
-      </section>
-
-      <section aria-labelledby="contact-title">
-        <h2 id="contact-title">Contact</h2>
-        <ul class="rows">
-          <li>
-            <a href="mailto:ricky@rickymorelli.com">
-              <span class="label">Email</span>
-              <span class="meta">ricky@rickymorelli.com</span>
-            </a>
-          </li>
-          <li>
-            <a href="https://www.linkedin.com/in/rickymorelli/" rel="me noopener noreferrer" target="_blank">
-              <span class="label">LinkedIn<svg class="ext" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.5 11.5 11.5 4.5M6.5 4.5h5v5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="sr-only"> (opens in a new tab)</span></span>
-              <span class="meta">/in/rickymorelli</span>
-            </a>
-          </li>
-        </ul>
-      </section>
-    </main>
-
-    <footer class="colophon">
-      <p>© 2026 Ricky Morelli</p>
-    </footer>
-  </div>
-
-  <script>
-    (function () {
-      var root = document.documentElement;
-      var button = document.getElementById("theme");
-      var color = document.querySelector('meta[name="theme-color"]');
-      var media = window.matchMedia("(prefers-color-scheme: dark)");
-
-      function current() {
-        var set = root.getAttribute("data-theme");
-        if (set === "light" || set === "dark") return set;
-        return media.matches ? "dark" : "light";
-      }
-
-      function sync() {
-        var dark = current() === "dark";
-        button.setAttribute("aria-pressed", dark ? "true" : "false");
-        button.setAttribute("aria-label", dark ? "Switch to light mode" : "Switch to dark mode");
-        if (color) color.setAttribute("content", dark ? "#141311" : "#f3f0e8");
-      }
-
-      button.addEventListener("click", function () {
-        var next = current() === "dark" ? "light" : "dark";
-        root.setAttribute("data-theme", next);
-        try { localStorage.setItem("theme", next); } catch (e) {}
-        sync();
-      });
-
-      media.addEventListener("change", function () {
-        if (!root.getAttribute("data-theme")) sync();
-      });
-
-      sync();
-    })();
-  </script>
+  <main id="content">
+    <h1>Ricky<br>Morelli</h1>
+    <p class="lede">Growth, paid media and creative for ecommerce brands.</p>
+    <ul class="links">
+      <li>
+        <a href="https://substack.com/@rickymorelli" rel="me noopener noreferrer" target="_blank">Substack<span class="sr-only"> (opens in a new tab)</span></a>
+      </li>
+      <li>
+        <a href="https://www.linkedin.com/in/rickymorelli/" rel="me noopener noreferrer" target="_blank">LinkedIn<span class="sr-only"> (opens in a new tab)</span></a>
+      </li>
+      <li>
+        <a href="mailto:ricky@rickymorelli.com">Email</a>
+      </li>
+    </ul>
+    <!-- TODO: Replace href="/agent" with the live personal agent URL. The agent is not built yet. -->
+    <a class="agent" href="/agent">
+      <span>Ask my agent</span>
+      <svg viewBox="0 0 12 10" aria-hidden="true" focusable="false">
+        <path d="M6.3.7 10.1 4.5H0v1h10.1L6.3 9.3 7 10 12 5 7 0z" fill="currentColor"/>
+      </svg>
+    </a>
+  </main>
 </body>
 </html>
