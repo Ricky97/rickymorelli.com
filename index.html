@@ -73,8 +73,8 @@
 
     :root {
       --paper: #ece8e0;
-      --ink: #1a1714;
-      --muted: #5c564e;
+      --cobalt: #1c34d6;
+      --note: #3b4fd8;
       --accent: #f0501e;
       --mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", "SFMono-Regular", Menlo, Consolas, monospace;
       --pad: clamp(1.15rem, 4vw, 3.25rem);
@@ -96,7 +96,7 @@
       display: grid;
       grid-template-rows: auto 1fr;
       background: var(--paper);
-      color: var(--ink);
+      color: var(--cobalt);
       font-family: var(--mono);
       font-weight: 400;
       font-size: 0.8125rem;
@@ -110,12 +110,23 @@
       color: var(--paper);
     }
 
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 4;
+      pointer-events: none;
+      opacity: 0.22;
+      mix-blend-mode: multiply;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
     .skip {
       position: absolute;
       left: var(--pad);
       top: 0.75rem;
       transform: translateY(-160%);
-      background: var(--ink);
+      background: var(--cobalt);
       color: var(--paper);
       padding: 0.55rem 0.7rem;
       z-index: 5;
@@ -133,13 +144,24 @@
     }
 
     .kicker {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.7rem;
       margin: 0;
       padding: clamp(1.35rem, 3.4vh, 2.15rem) var(--pad) 0 calc(var(--pad) + var(--idx));
-      color: var(--muted);
+      color: var(--cobalt);
       font-size: 0.8125rem;
       line-height: 1.45;
       letter-spacing: 0.005em;
       text-wrap: balance;
+    }
+
+    .kicker::after {
+      content: "";
+      width: 5.25rem;
+      height: 2px;
+      background: var(--cobalt);
     }
 
     main {
@@ -188,12 +210,34 @@
       white-space: nowrap;
     }
 
+    .name {
+      position: relative;
+      display: inline-block;
+      margin: 0 0 clamp(2.6rem, 7.4vh, 4.5rem);
+    }
+
+    .ticks {
+      position: absolute;
+      left: calc(100% + 0.08em);
+      top: 0.02em;
+      width: 0.42em;
+      height: auto;
+      overflow: visible;
+    }
+
+    .ticks path {
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 8;
+      stroke-linecap: round;
+    }
+
     .idx {
       position: absolute;
       top: 50%;
       right: calc(100% + clamp(0.7rem, 1.5vw, 1.15rem));
       transform: translateY(-54%);
-      color: var(--muted);
+      color: var(--accent);
       font-family: var(--mono);
       font-size: 0.8125rem;
       font-weight: 400;
@@ -226,7 +270,7 @@
     }
 
     .note {
-      color: var(--muted);
+      color: var(--note);
       font-family: var(--mono);
       font-size: 0.8125rem;
       font-weight: 400;
@@ -247,8 +291,40 @@
     }
 
     .stack a:focus-visible .label {
-      outline: 2px solid var(--ink);
+      outline: 2px solid var(--cobalt);
       outline-offset: 0.06em;
+    }
+
+    .agent {
+      margin: clamp(1.35rem, 3.2vh, 2.15rem) 0 0;
+    }
+
+    .agent a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      padding: 0.4rem 0.9rem;
+      border: 1.5px solid var(--cobalt);
+      border-radius: 999px;
+      color: var(--cobalt);
+      background: transparent;
+      font-family: var(--mono);
+      font-size: 0.8125rem;
+      font-weight: 400;
+      letter-spacing: 0.01em;
+      line-height: 1;
+      text-decoration: none;
+    }
+
+    .agent a:hover,
+    .agent a:focus-visible {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .agent a:focus-visible {
+      outline: 2px solid var(--cobalt);
+      outline-offset: 3px;
     }
 
     /* Notes sit beside the word while the row is wide, and under it when it is not. */
@@ -278,15 +354,25 @@
       }
     }
 
+    @media (max-width: 520px) {
+      .ticks {
+        left: auto;
+        right: 0.02em;
+        top: -0.42em;
+        width: 0.55em;
+      }
+    }
+
     @media (prefers-reduced-motion: no-preference) {
-      .label {
-        transition: color 160ms ease;
+      .label,
+      .agent a {
+        transition: color 160ms ease, border-color 160ms ease;
       }
     }
 
     @media print {
       body { background: #fff; }
-      .skip { display: none; }
+      body::before, .skip, .ticks { display: none; }
       .label { font-size: 42pt; }
     }
   </style>
@@ -296,7 +382,9 @@
   <p class="kicker">Growth, paid media and creative for ecommerce. Brisbane.</p>
   <main id="content">
     <div class="poster">
-      <h1 class="line"><span class="label">Ricky Morelli</span></h1>
+      <h1 class="name">
+        <span class="label">Ricky Morelli<svg class="ticks" viewBox="0 0 64 52" aria-hidden="true" focusable="false"><path d="M8 44 L16 8"/><path d="M28 46 L34 6"/><path d="M48 44 L54 10"/></svg></span>
+      </h1>
       <ol class="stack">
         <li>
           <a class="line" href="https://www.linkedin.com/in/rickymorelli/" rel="me noopener noreferrer" target="_blank">
@@ -312,14 +400,9 @@
             <span class="sr-only"> (opens in a new tab)</span>
           </a>
         </li>
-        <li>
-          <!-- TODO: Replace href="/agent" with the live personal agent URL. The agent is not built yet. -->
-          <a class="line" href="/agent">
-            <span class="label">Ask my agent<span class="idx" aria-hidden="true"><span class="dash"></span>03</span></span>
-            <span class="note">Personal agent</span>
-          </a>
-        </li>
       </ol>
+      <!-- TODO: Replace href="/agent" with the live personal agent URL. The agent is not built yet. -->
+      <p class="agent"><a href="/agent">Ask my agent</a></p>
     </div>
   </main>
 </body>
