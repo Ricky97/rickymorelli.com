@@ -1,201 +1,409 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-AU">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Ricky</title>
-<meta name="description" content="Ricky Morelli — personal site." />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet" />
-<style>
-  :root {
-    --paper:    #ded7c4;  /* aged sun-bleached paper */
-    --paper-hi: #e7e1d0;
-    --ink:      #2e2a22;
-    --orange:   #cf5a31;  /* faded terracotta-vermillion */
-    --water:    #2f6f6f;  /* muted boat teal */
-    --water-dk: #245658;
-  }
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ricky Morelli</title>
+  <meta name="description" content="Ricky Morelli. Growth, paid media and creative for ecommerce. Brisbane.">
+  <meta name="author" content="Ricky Morelli">
+  <link rel="canonical" href="https://www.rickymorelli.com/">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#ECE8E0">
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  html, body { height: 100%; }
+  <meta property="og:site_name" content="Ricky Morelli">
+  <meta property="og:title" content="Ricky Morelli">
+  <meta property="og:description" content="Growth, paid media and creative for ecommerce. Brisbane.">
+  <meta property="og:type" content="profile">
+  <meta property="og:url" content="https://www.rickymorelli.com/">
+  <meta property="og:locale" content="en_AU">
+  <meta property="profile:first_name" content="Ricky">
+  <meta property="profile:last_name" content="Morelli">
+  <meta property="og:image" content="https://www.rickymorelli.com/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Ricky Morelli. Growth, paid media and creative for ecommerce. Brisbane.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Ricky Morelli">
+  <meta name="twitter:description" content="Growth, paid media and creative for ecommerce. Brisbane.">
+  <meta name="twitter:image" content="https://www.rickymorelli.com/og.png">
+  <meta name="twitter:image:alt" content="Ricky Morelli. Growth, paid media and creative for ecommerce. Brisbane.">
 
-  body {
-    background: var(--paper);
-    color: var(--ink);
-    font-family: 'Anton', system-ui, sans-serif;
-    overflow: hidden;
-    position: relative;
-    -webkit-font-smoothing: antialiased;
-  }
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/favicon-16.png" sizes="16x16">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="preload" href="/fonts/inter-tight-900.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/ibm-plex-mono-400.woff2" as="font" type="font/woff2" crossorigin>
 
-  /* ---------- water (lower band, like the lake) ---------- */
-  .water {
-    position: fixed;
-    left: 0; right: 0; bottom: 0;
-    height: 42%;
-    z-index: 2;
-    background:
-      linear-gradient(180deg,
-        var(--water) 0%,
-        var(--water) 30%,
-        var(--water-dk) 100%);
-    box-shadow: inset 0 3px 0 rgba(46,42,34,0.25);
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Ricky Morelli",
+    "url": "https://www.rickymorelli.com/",
+    "description": "Growth, paid media and creative for ecommerce. Brisbane.",
+    "email": "ricky@rickymorelli.com",
+    "homeLocation": {
+      "@type": "Place",
+      "name": "Brisbane"
+    },
+    "sameAs": [
+      "https://www.linkedin.com/in/rickymorelli/",
+      "https://substack.com/@rickymorelli"
+    ]
   }
-  /* faint horizontal ripples on the water */
-  .water::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: repeating-linear-gradient(
-      180deg,
-      rgba(255,255,255,0.05) 0px,
-      rgba(255,255,255,0.05) 1px,
-      transparent 1px,
-      transparent 16px);
-    opacity: 0.7;
-    animation: ripple 9s ease-in-out infinite alternate;
-  }
-  @keyframes ripple {
-    from { transform: translateY(0); }
-    to   { transform: translateY(6px); }
-  }
+  </script>
 
-  /* ---------- name ---------- */
-  .stage {
-    position: fixed;
-    inset: 0;
-    z-index: 10;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    /* lift the name so its baseline rides just above the waterline */
-    padding-bottom: 26vh;
-  }
-  .name {
-    font-family: 'Anton', sans-serif;
-    color: var(--orange);
-    font-size: clamp(5rem, 30vw, 24rem);
-    line-height: 0.86;
-    letter-spacing: 0.005em;
-    text-transform: uppercase;
-    will-change: transform;
-    text-shadow: 0.01em 0.012em 0 rgba(46,42,34,0.18);
-  }
+  <style>
+    @font-face {
+      font-family: "Inter Tight";
+      src: url("/fonts/inter-tight-900.woff2") format("woff2");
+      font-weight: 900;
+      font-style: normal;
+      font-display: swap;
+    }
 
-  /* mirrored reflection sitting on the water */
-  .reflection {
-    position: fixed;
-    left: 0; right: 0;
-    bottom: 42%;
-    z-index: 3;
-    display: flex;
-    justify-content: center;
-    pointer-events: none;
-    transform: scaleY(-1) translateY(-2px);
-    transform-origin: bottom center;
-    opacity: 0.16;
-    -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 70%);
-            mask-image: linear-gradient(180deg, #000 0%, transparent 70%);
-  }
-  .reflection .name {
-    color: #ffffff;
-    text-shadow: none;
-    animation: shimmer 7s ease-in-out infinite alternate;
-  }
-  @keyframes shimmer {
-    from { opacity: 0.9; transform: skewX(-1.2deg); }
-    to   { opacity: 1;   transform: skewX(1.2deg); }
-  }
+    @font-face {
+      font-family: "IBM Plex Mono";
+      src: url("/fonts/ibm-plex-mono-400.woff2") format("woff2");
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
 
-  /* ---------- aged paper texture, grain, vignette ---------- */
-  .grain {
-    position: fixed;
-    inset: -50%;
-    width: 200%; height: 200%;
-    pointer-events: none;
-    z-index: 40;
-    opacity: 0.4;
-    mix-blend-mode: multiply;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    animation: grain 0.7s steps(2) infinite;
-  }
-  @keyframes grain {
-    0%   { transform: translate(0,0); }
-    50%  { transform: translate(-2%,1%); }
-    100% { transform: translate(1%,-1%); }
-  }
+    :root {
+      --paper: #ece8e0;
+      --cobalt: #1c34d6;
+      --note: #3b4fd8;
+      --accent: #f0501e;
+      --mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+      --pad: clamp(1.15rem, 4vw, 3.25rem);
+      --idx: 4.75rem;
+      color-scheme: light;
+    }
 
-  /* soft stains / uneven aging on the paper */
-  .stains {
-    position: fixed;
-    inset: 0;
-    z-index: 1;
-    pointer-events: none;
-    background:
-      radial-gradient(40% 30% at 18% 20%, rgba(120,100,60,0.10), transparent 70%),
-      radial-gradient(50% 40% at 85% 12%, rgba(120,100,60,0.08), transparent 70%),
-      radial-gradient(35% 35% at 70% 55%, rgba(90,70,40,0.06), transparent 70%);
-    mix-blend-mode: multiply;
-  }
+    *, *::before, *::after { box-sizing: border-box; }
 
-  .vignette {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 30;
-    background: radial-gradient(120% 110% at 50% 45%, transparent 58%, rgba(46,42,34,0.20) 100%);
-    mix-blend-mode: multiply;
-  }
+    html {
+      background: var(--paper);
+      height: 100%;
+    }
 
-  /* ---------- entrance ---------- */
-  .reveal { opacity: 0; transform: translateY(40px) scale(0.99); animation: rise 1.2s cubic-bezier(.16,.84,.32,1) 0.2s forwards; }
-  @keyframes rise { to { opacity: 1; transform: translateY(0) scale(1); } }
+    body {
+      margin: 0;
+      min-height: 100%;
+      min-height: 100svh;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      background: var(--paper);
+      color: var(--cobalt);
+      font-family: var(--mono);
+      font-weight: 400;
+      font-size: 0.8125rem;
+      line-height: 1.4;
+      text-rendering: geometricPrecision;
+      -webkit-font-smoothing: antialiased;
+    }
 
-  .water.reveal-w { opacity: 0; transform: translateY(30%); animation: floodIn 1.3s cubic-bezier(.16,.84,.32,1) 0.1s forwards; }
-  @keyframes floodIn { to { opacity: 1; transform: translateY(0); } }
+    ::selection {
+      background: var(--accent);
+      color: var(--paper);
+    }
 
-  @media (prefers-reduced-motion: reduce) {
-    .grain, .water::after, .reflection .name { animation: none; }
-    .reveal, .water.reveal-w { animation: none; opacity: 1; transform: none; }
-    .water.reveal-w { transform: none; }
-  }
-</style>
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 4;
+      pointer-events: none;
+      opacity: 0.22;
+      mix-blend-mode: multiply;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    .skip {
+      position: absolute;
+      left: var(--pad);
+      top: 0.75rem;
+      transform: translateY(-160%);
+      background: var(--cobalt);
+      color: var(--paper);
+      padding: 0.55rem 0.7rem;
+      z-index: 5;
+      text-decoration: none;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .skip:focus {
+      transform: none;
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+    }
+
+    .kicker {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.7rem;
+      margin: 0;
+      padding: clamp(1.35rem, 3.4vh, 2.15rem) var(--pad) 0 calc(var(--pad) + var(--idx));
+      color: var(--cobalt);
+      font-size: 0.8125rem;
+      line-height: 1.45;
+      letter-spacing: 0.005em;
+      text-wrap: balance;
+    }
+
+    .kicker::after {
+      content: "";
+      width: 5.25rem;
+      height: 2px;
+      background: var(--cobalt);
+    }
+
+    main {
+      display: flex;
+      align-items: center;
+      min-height: 0;
+      padding: clamp(1.75rem, 7vh, 4.5rem) var(--pad) clamp(2.5rem, 11vh, 6.5rem) calc(var(--pad) + var(--idx));
+    }
+
+    .poster {
+      width: 100%;
+      container-type: inline-size;
+    }
+
+    h1, p, ul, ol { margin: 0; }
+
+    h1 {
+      font-size: inherit;
+      font-weight: inherit;
+    }
+
+    .stack {
+      padding: 0;
+      list-style: none;
+    }
+
+    .line {
+      position: relative;
+      display: grid;
+      grid-template-columns: max-content minmax(0, max-content);
+      column-gap: clamp(0.85rem, 1.6vw, 1.35rem);
+      align-items: center;
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .label {
+      position: relative;
+      font-family: "Inter Tight", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+      font-weight: 900;
+      font-size: clamp(2.15rem, 9vw, 8.35rem);
+      font-size: clamp(2.15rem, 15.2cqi, 8.35rem);
+      line-height: 0.88;
+      letter-spacing: -0.046em;
+      font-kerning: normal;
+      white-space: nowrap;
+    }
+
+    .name {
+      position: relative;
+      display: inline-block;
+      margin: 0 0 clamp(2.6rem, 7.4vh, 4.5rem);
+    }
+
+    .ticks {
+      position: absolute;
+      left: calc(100% + 0.08em);
+      top: 0.02em;
+      width: 0.42em;
+      height: auto;
+      overflow: visible;
+    }
+
+    .ticks path {
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 8;
+      stroke-linecap: round;
+    }
+
+    .idx {
+      position: absolute;
+      top: 50%;
+      right: calc(100% + clamp(0.7rem, 1.5vw, 1.15rem));
+      transform: translateY(-54%);
+      color: var(--accent);
+      font-family: var(--mono);
+      font-size: 0.8125rem;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      line-height: 1;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+      user-select: none;
+    }
+
+    .dash {
+      display: inline-block;
+      width: 1.05em;
+      height: 1.5px;
+      margin-right: 0.42em;
+      background: var(--accent);
+      vertical-align: 0.14em;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .note {
+      color: var(--note);
+      font-family: var(--mono);
+      font-size: 0.8125rem;
+      font-weight: 400;
+      letter-spacing: 0.01em;
+      line-height: 1.35;
+      text-wrap: pretty;
+      max-width: 16rem;
+      transform: translateY(0.12em);
+    }
+
+    .stack a:hover .label,
+    .stack a:focus-visible .label {
+      color: var(--accent);
+    }
+
+    .stack a:focus-visible {
+      outline: none;
+    }
+
+    .stack a:focus-visible .label {
+      outline: 2px solid var(--cobalt);
+      outline-offset: 0.06em;
+    }
+
+    .agent {
+      margin: clamp(1.35rem, 3.2vh, 2.15rem) 0 0;
+    }
+
+    .agent a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      padding: 0.4rem 0.9rem;
+      border: 1.5px solid var(--cobalt);
+      border-radius: 999px;
+      color: var(--cobalt);
+      background: transparent;
+      font-family: var(--mono);
+      font-size: 0.8125rem;
+      font-weight: 400;
+      letter-spacing: 0.01em;
+      line-height: 1;
+      text-decoration: none;
+    }
+
+    .agent a:hover,
+    .agent a:focus-visible {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .agent a:focus-visible {
+      outline: 2px solid var(--cobalt);
+      outline-offset: 3px;
+    }
+
+    /* Notes sit beside the word while the row is wide, and under it when it is not. */
+    @container (max-width: 1040px) {
+      .stack a {
+        grid-template-columns: minmax(0, 1fr);
+        justify-items: start;
+        row-gap: 0.22rem;
+        padding-bottom: 0.42rem;
+      }
+
+      .note {
+        max-width: 18rem;
+        transform: none;
+      }
+    }
+
+    @media (max-width: 860px) {
+      :root { --idx: 3.35rem; }
+    }
+
+    @media (max-width: 420px) {
+      :root { --idx: 2.9rem; --pad: 1rem; }
+
+      .label {
+        letter-spacing: -0.04em;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .ticks {
+        left: auto;
+        right: 0.02em;
+        top: -0.42em;
+        width: 0.55em;
+      }
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      .label,
+      .agent a {
+        transition: color 160ms ease, border-color 160ms ease;
+      }
+    }
+
+    @media print {
+      body { background: #fff; }
+      body::before, .skip, .ticks { display: none; }
+      .label { font-size: 42pt; }
+    }
+  </style>
 </head>
 <body>
-  <div class="stains"></div>
-  <div class="water reveal-w"></div>
-
-  <div class="reflection"><span class="name">Ricky</span></div>
-
-  <main class="stage">
-    <h1 class="name reveal" id="name">Ricky</h1>
+  <a class="skip" href="#content">Skip to content</a>
+  <p class="kicker">Growth, paid media and creative for ecommerce. Brisbane.</p>
+  <main id="content">
+    <div class="poster">
+      <h1 class="name">
+        <span class="label">Ricky Morelli<svg class="ticks" viewBox="0 0 64 52" aria-hidden="true" focusable="false"><path d="M8 44 L16 8"/><path d="M28 46 L34 6"/><path d="M48 44 L54 10"/></svg></span>
+      </h1>
+      <ol class="stack">
+        <li>
+          <a class="line" href="https://www.linkedin.com/in/rickymorelli/" rel="me noopener noreferrer" target="_blank">
+            <span class="label">LinkedIn<span class="idx" aria-hidden="true"><span class="dash"></span>01</span></span>
+            <span class="note">Profile</span>
+            <span class="sr-only"> (opens in a new tab)</span>
+          </a>
+        </li>
+        <li>
+          <a class="line" href="https://substack.com/@rickymorelli" rel="me noopener noreferrer" target="_blank">
+            <span class="label">Substack<span class="idx" aria-hidden="true"><span class="dash"></span>02</span></span>
+            <span class="note">Writing on ad tech and money</span>
+            <span class="sr-only"> (opens in a new tab)</span>
+          </a>
+        </li>
+      </ol>
+      <!-- TODO: Replace href="/agent" with the live personal agent URL. The agent is not built yet. -->
+      <p class="agent"><a href="/agent">Ask my agent</a></p>
+    </div>
   </main>
-
-  <div class="vignette"></div>
-  <div class="grain"></div>
-
-  <script>
-    // gentle cursor parallax — name drifts, kept off until the entrance settles
-    (function () {
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-      var name = document.getElementById('name');
-      var tx = 0, ty = 0, cx = 0, cy = 0, ready = false;
-      window.setTimeout(function () { ready = true; }, 1600);
-      window.addEventListener('pointermove', function (e) {
-        tx = (e.clientX / window.innerWidth  - 0.5);
-        ty = (e.clientY / window.innerHeight - 0.5);
-      });
-      function frame() {
-        cx += (tx - cx) * 0.05;
-        cy += (ty - cy) * 0.05;
-        if (ready) name.style.transform = 'translate(' + (cx * 12) + 'px,' + (cy * 8) + 'px)';
-        requestAnimationFrame(frame);
-      }
-      requestAnimationFrame(frame);
-    })();
-  </script>
 </body>
 </html>
